@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>隱私看護方案｜Summit Technology</title>
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <meta name="description" content="Summit Technology 提供超聲波隱私看護方案，透過無影像感測、跌倒偵測、異常通報與智慧呼救，協助居家與長照機構建立更安心的照護環境。" />
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #5f6b7a;
+      --line: #e5eaf0;
+      --primary: #4f8f18;
+      --primary-2: #94c848;
+      --soft: #f0f8e8;
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding-top: 72px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+
+    .nav.container {
+      width: 100%;
+      max-width: none;
+      padding: 0 40px;
+      margin: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      height: 72px;
+      display: grid;
+      grid-template-columns: 260px 1fr 260px;
+      align-items: center;
+      gap: 24px;
+    }
+    .header-logo {
+      height: 60px;
+      width: auto;
+      display: block;
+      transform: translateY(4px);
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .brand small { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 5px; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2vw, 30px);
+      font-size: clamp(14px, 1.25vw, 17px);
+      font-weight: 700;
+      color: #263142;
+    }
+    .nav-links a,
+    .nav-dropdown-trigger {
+      white-space: nowrap;
+      transition: color .2s ease;
+    }
+    .nav-links a:hover,
+    .nav-dropdown-trigger:hover { color: var(--primary); }
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 72px;
+    }
+    .nav-dropdown-trigger::after {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-left: 8px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+    }
+    .nav-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      transform: translateY(8px);
+      min-width: 230px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, .12);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+      z-index: 1002;
+    }
+    .nav-item:hover .nav-dropdown {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .nav-dropdown a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-size: 16px;
+      color: #263142;
+    }
+    .nav-dropdown a:hover {
+      background: var(--soft);
+      color: var(--primary);
+    }
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .menu-toggle span {
+      width: 20px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--text);
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .menu-toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .lang {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-left: 0;
+    }
+    .lang-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex: 0 0 auto;
+    }
+    .lang button {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .lang button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .hero {
+      position: relative;
+      min-height: 680px;
+      display: flex;
+      align-items: center;
+      padding: 86px 0;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+
+      background-image:
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,.72) 0%,
+          rgba(255,255,255,.46) 38%,
+          rgba(255,255,255,.16) 68%,
+          rgba(255,255,255,.02) 100%
+        ),
+        url("images/privacy/banner.avif");
+
+      background-size: cover;
+      background-position: center right;
+      background-repeat: no-repeat;
+    }
+
+    .hero .container { position: relative; z-index: 1; }
+
+    .hero-grid {
+      display: block;
+    }
+
+    .eyebrow {
+      color: var(--primary);
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: clamp(40px, 5vw, 66px);
+      line-height: 1.08;
+      margin: 0 0 22px;
+      letter-spacing: -1.8px;
+    }
+    .lead {
+      font-size: 19px;
+      color: var(--muted);
+      max-width: 650px;
+      margin: 0 0 32px;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 34px;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border: 1px solid rgba(79,143,24,.20);
+      border-radius: 999px;
+      background: rgba(255,255,255,.76);
+      color: #315315;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-weight: 800;
+      border: 1px solid var(--line);
+    }
+    .btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn.secondary { background: #fff; color: var(--primary); }
+
+    section { padding: 78px 0; }
+    .section-head { max-width: 760px; margin-bottom: 36px; }
+    .section-head.center { text-align: center; margin-left: auto; margin-right: auto; }
+    .section-head h2 {
+      font-size: clamp(30px, 3vw, 42px);
+      line-height: 1.18;
+      margin: 0 0 14px;
+      letter-spacing: -.8px;
+    }
+    .section-head p { color: var(--muted); margin: 0; font-size: 17px; }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      min-height: 250px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, .08);
+    }
+    .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      color: var(--primary);
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 22px; }
+    .card p { margin: 0; color: var(--muted); }
+
+    .feature-section {
+      background: #fff;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      margin-bottom: 70px;
+    }
+    .feature-row.reverse .feature-copy { order: 2; }
+    .feature-row.reverse .feature-media { order: 1; }
+    .feature-row:last-child { margin-bottom: 0; }
+    .feature-media {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 22px 60px rgba(15, 23, 42, .08);
+    }
+    .feature-media img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+    .media-label {
+      position: absolute;
+      left: 22px;
+      bottom: 22px;
+      padding: 9px 13px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(23,32,51,.72);
+      backdrop-filter: blur(8px);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .feature-copy h3 {
+      font-size: clamp(28px, 3vw, 40px);
+      line-height: 1.2;
+      margin: 0 0 18px;
+      letter-spacing: -.6px;
+    }
+    .feature-copy p {
+      color: var(--muted);
+      font-size: 17px;
+      margin: 0 0 18px;
+    }
+    .check-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #334155;
+    }
+    .check-list li {
+      position: relative;
+      padding: 7px 0 7px 24px;
+    }
+    .check-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: 900;
+    }
+
+    .no-wearable {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 30px;
+      align-items: center;
+      padding: 34px;
+      border: 1px solid rgba(79,143,24,.18);
+      border-radius: 28px;
+      background: linear-gradient(135deg, #ffffff, #f0f8e8);
+    }
+    .no-wearable h3 {
+      margin: 0 0 12px;
+      font-size: 28px;
+    }
+    .no-wearable p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .product-shot {
+      justify-self: center;
+      width: min(260px, 100%);
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 18px;
+      box-shadow: 0 20px 50px rgba(79, 143, 24, .10);
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+    .scenario-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 330px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: #172033;
+    }
+    .scenario-card img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .74;
+      transition: transform .45s ease;
+    }
+    .scenario-card:hover img { transform: scale(1.05); }
+    .scenario-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.72) 100%);
+    }
+    .scenario-content {
+      position: absolute;
+      z-index: 1;
+      left: 28px;
+      right: 28px;
+      bottom: 26px;
+      color: #fff;
+    }
+    .scenario-content h3 {
+      margin: 0 0 8px;
+      font-size: 25px;
+    }
+    .scenario-content p {
+      margin: 0;
+      color: rgba(255,255,255,.82);
+    }
+
+    .app-section {
+      color: #fff;
+      background: linear-gradient(135deg, #213719, #4f8f18);
+    }
+    .app-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .app-section h2 {
+      font-size: clamp(30px, 3vw, 42px);
+      margin: 0 0 18px;
+      letter-spacing: -.6px;
+    }
+    .app-section p { color: rgba(255,255,255,.78); }
+    .app-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .app-item {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .app-item b { display: block; margin-bottom: 4px; }
+    .app-item span { color: rgba(255,255,255,.76); font-size: 14px; }
+    .phone-mockup {
+      justify-self: center;
+      width: 270px;
+      height: 520px;
+      border-radius: 42px;
+      padding: 14px;
+      background: #172033;
+      box-shadow: 0 30px 80px rgba(0,0,0,.28);
+    }
+    .phone-screen {
+      height: 100%;
+      border-radius: 31px;
+      background: #fff;
+      color: var(--text);
+      padding: 28px 18px;
+      overflow: hidden;
+    }
+    .app-status {
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--soft);
+      color: #315315;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .app-status b { display: block; font-size: 18px; margin-bottom: 4px; }
+    .app-status strong { display: block; font-size: 24px; margin: 8px 0; }
+    .record {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .phone-btn {
+      margin-top: 28px;
+      width: 100%;
+      height: 46px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .contact-cta {
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff, #f0f8e8);
+    }
+    .contact-cta h2 {
+      font-size: clamp(30px, 3vw, 42px);
+      margin: 0 0 14px;
+      letter-spacing: -.6px;
+    }
+    .contact-cta p {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 720px;
+      margin: 0 auto 30px;
+    }
+
+    footer {
+      padding: 52px 0 28px;
+      color: var(--muted);
+      font-size: 14px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.3fr .8fr 1fr;
+      gap: 42px;
+      align-items: start;
+    }
+    .footer-brand img {
+      height: 58px;
+      width: auto;
+      display: block;
+      margin-bottom: 18px;
+    }
+    .footer-brand p {
+      margin: 0;
+      max-width: 380px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .footer-title {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .footer-links { display: grid; gap: 8px; }
+    .footer-links a {
+      color: var(--muted);
+      transition: color .2s ease;
+    }
+    .footer-links a:hover { color: var(--primary); }
+    .footer-contact p { margin: 0 0 8px; }
+    .footer-office-title {
+      margin-top: 14px !important;
+      color: var(--text);
+      font-weight: 800;
+    }
+    .footer-bottom {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(79, 143, 24, .18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+      background: #fff;
+    }
+
+    @media (max-width: 900px) {
+      body { padding-top: 88px; }
+      .container { width: min(var(--max), calc(100% - 32px)); }
+      .hero-grid,
+      .feature-row,
+      .feature-row.reverse,
+      .no-wearable,
+      .scenario-grid,
+      .app-grid,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .feature-row.reverse .feature-copy,
+      .feature-row.reverse .feature-media { order: initial; }
+      .hero {
+        min-height: 640px;
+        padding: 64px 0;
+
+        background-image:
+          linear-gradient(
+            90deg,
+            rgba(255,255,255,.97) 0%,
+            rgba(255,255,255,.90) 64%,
+            rgba(255,255,255,.52) 100%
+          ),
+          url("images/privacy/banner.avif");
+
+        background-position: 68% center;
+      }
+      section { padding: 62px 0; }
+      .nav {
+        height: 88px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-logo {
+        height: 42px;
+        transform: translateY(2px);
+      }
+      .lang {
+        margin-left: auto;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+      .lang-icon { width: 18px; height: 18px; }
+      .lang button { padding: 5px 8px; font-size: 13px; }
+      .menu-toggle { display: inline-flex; margin-left: 8px; }
+      .nav-links {
+        position: fixed;
+        top: 88px;
+        left: 0;
+        width: 100%;
+        max-height: calc(100vh - 88px);
+        overflow-y: auto;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 14px 24px 22px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, .10);
+        font-size: 16px;
+        z-index: 1001;
+      }
+      .nav-links.is-open { display: flex; }
+      .nav-item {
+        width: 100%;
+        display: block;
+        height: auto;
+      }
+      .nav-dropdown-trigger::after { display: none; }
+      .nav-dropdown,
+      .nav-item:hover .nav-dropdown {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        width: 100%;
+        min-width: 0;
+        padding: 0 0 0 18px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      .nav-links a,
+      .nav-dropdown-trigger {
+        display: block;
+        width: 100%;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        color: var(--text);
+        line-height: 1.35;
+        background: transparent;
+      }
+      .nav-dropdown a {
+        display: block;
+        width: 100%;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--muted);
+        background: transparent;
+      }
+      .nav-dropdown a:hover { background: transparent; }
+      .nav-links > a:last-child { border-bottom: 0; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow" data-i18n="hero_eyebrow">Privacy Care Solution</div>
+          <h1 data-i18n="hero_title">看不見的守護，最安心的陪伴。</h1>
+          <p class="lead" data-i18n="hero_lead">以無影像感測技術建立隱私友善的照護系統，適用於浴室、臥室與長照機構，讓安全監測不再等於被監控。</p>
+          <div class="hero-tags">
+            <span class="hero-tag" data-i18n="hero_tag_1">無鏡頭感測</span>
+            <span class="hero-tag" data-i18n="hero_tag_2">跌倒即時通報</span>
+            <span class="hero-tag" data-i18n="hero_tag_3">智慧呼救</span>
+          </div>
+          <div class="cta">
+            <a href="#features" class="btn primary" data-i18n="hero_cta_1">了解方案能力</a>
+            <a href="contact.html" class="btn secondary" data-i18n="hero_cta_2">聯絡我們</a>
+          </div>
+        </div>
+    </section>
+
+    <section id="problems">
+      <div class="container">
+        <div class="section-head center">
+          <h2 data-i18n="problem_title">您是否也擔心這些「萬一」？</h2>
+          <p data-i18n="problem_lead">傳統監視器容易造成隱私疑慮，穿戴裝置又可能忘記佩戴。隱私看護方案，正是為這些真實照護痛點而設計。</p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">01</div>
+            <h3 data-i18n="problem_1_title">浴室滑倒無人知</h3>
+            <p data-i18n="problem_1_text">浴室與廁所是最需要安全監測、卻最不適合裝攝影機的空間。</p>
+          </article>
+          <article class="card">
+            <div class="icon">02</div>
+            <h3 data-i18n="problem_2_title">半夜意外無力呼救</h3>
+            <p data-i18n="problem_2_text">長輩可能離手機太遠，或身體虛弱到無法完成撥號求助。</p>
+          </article>
+          <article class="card">
+            <div class="icon">03</div>
+            <h3 data-i18n="problem_3_title">照護人力分身乏術</h3>
+            <p data-i18n="problem_3_text">機構夜間巡房壓力高，無法每分每秒掌握每一位住民狀態。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="feature-section">
+      <div class="container">
+        <div class="section-head center">
+          <div class="eyebrow" data-i18n="feature_eyebrow">Key Features</div>
+          <h2 data-i18n="feature_title">四大核心優勢，全面守護</h2>
+          <p data-i18n="feature_lead">從感測、判斷、通報到聯繫，協助客戶建立可落地的智慧照護產品與系統方案。</p>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-media">
+            <img src="images/privacy/1.png" alt="無影像隱私看護示意圖">
+            <span class="media-label" data-i18n="feature_1_label">非攝影鏡頭，私密空間也能裝</span>
+          </div>
+          <div class="feature-copy">
+            <div class="icon">A</div>
+            <h3 data-i18n="feature_1_title">無影像感測，隱私零侵犯</h3>
+            <p data-i18n="feature_1_text">採用非攝影式感測技術，不拍攝、不錄影、不呈現人像畫面。適合臥室、浴室、廁所等需要高度隱私的照護環境。</p>
+            <ul class="check-list">
+              <li data-i18n="feature_1_point_1">無鏡頭設計，降低隱私外洩疑慮</li>
+              <li data-i18n="feature_1_point_2">黑暗、遮蔽與水氣環境下仍可進行狀態感測</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="feature-row reverse">
+          <div class="feature-copy">
+            <div class="icon">B</div>
+            <h3 data-i18n="feature_2_title">跌倒偵測，即時異常通報</h3>
+            <p data-i18n="feature_2_text">系統可判斷跌倒、長時間未活動等異常狀態，並將警報推送至家屬手機、管理後台或護理站，協助把握救援時間。</p>
+            <ul class="check-list">
+              <li data-i18n="feature_2_point_1">支援跌倒與異常事件判斷</li>
+              <li data-i18n="feature_2_point_2">可串接 App、後台或照護通知系統</li>
+            </ul>
+          </div>
+          <div class="feature-media">
+            <img src="images/privacy/2.png" alt="跌倒偵測與警報通知示意圖">
+            <span class="media-label" data-i18n="feature_2_label">即時警報通知</span>
+          </div>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-media">
+            <img src="images/privacy/3.png" alt="智慧呼救與雙向通話示意圖">
+            <span class="media-label" data-i18n="feature_3_label">一句話啟動求助流程</span>
+          </div>
+          <div class="feature-copy">
+            <div class="icon">C</div>
+            <h3 data-i18n="feature_3_title">智慧呼救，降低求助門檻</h3>
+            <p data-i18n="feature_3_text">當使用者感到不適但尚未跌倒時，可透過語音、動作或外部按鍵觸發呼救流程，協助聯繫家屬或照護人員。</p>
+            <ul class="check-list">
+              <li data-i18n="feature_3_point_1">適合居家緊急求助與機構照護場景</li>
+              <li data-i18n="feature_3_point_2">可依客戶需求整合語音與通話模組</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="no-wearable">
+          <div>
+            <div class="icon">D</div>
+            <h3 data-i18n="feature_4_title">無需穿戴，全天候無感守護</h3>
+            <p data-i18n="feature_4_text">吸頂或壁掛式安裝，不佔空間，也不需要長輩配戴手環、手錶或項鍊，避免忘記佩戴、忘記充電造成的照護空窗。</p>
+          </div>
+          <div class="product-shot">
+            <img src="images/privacy/product.png" alt="隱私看護產品示意圖">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="scenarios">
+      <div class="container">
+        <div class="section-head center">
+          <h2 data-i18n="scenario_title">適用場景</h2>
+          <p data-i18n="scenario_lead">從家庭到機構，建立不侵犯隱私的安全照護方案。</p>
+        </div>
+        <div class="scenario-grid">
+          <article class="scenario-card">
+            <img src="images/privacy/App.png" alt="居家看護 App 示意圖">
+            <div class="scenario-content">
+              <h3 data-i18n="scenario_1_title">居家照護</h3>
+              <p data-i18n="scenario_1_text">子女在外，也能透過 App 或通知系統掌握獨居父母的安全狀態。</p>
+            </div>
+          </article>
+          <article class="scenario-card">
+            <img src="images/privacy/3.png" alt="長照機構看護示意圖">
+            <div class="scenario-content">
+              <h3 data-i18n="scenario_2_title">長照與安養機構</h3>
+              <p data-i18n="scenario_2_text">提升夜間巡房效率，協助護理人員快速發現異常，降低照護風險。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-section">
+      <div class="container app-grid">
+        <div>
+          <h2 data-i18n="app_title">App 與後台整合，一手掌握照護狀態</h2>
+          <p data-i18n="app_lead">可依產品定位與客戶需求，整合即時狀態、歷史紀錄、推播通知與緊急通話等功能。</p>
+          <div class="app-list">
+            <div class="app-item">
+              <b data-i18n="app_1_title">即時狀態查看</b>
+              <span data-i18n="app_1_text">掌握活動中、靜止、離床、進入浴廁等狀態。</span>
+            </div>
+            <div class="app-item">
+              <b data-i18n="app_2_title">歷史活動紀錄</b>
+              <span data-i18n="app_2_text">記錄起床、如廁與活動時間，協助觀察生活作息。</span>
+            </div>
+            <div class="app-item">
+              <b data-i18n="app_3_title">緊急推播通知</b>
+              <span data-i18n="app_3_text">跌倒、呼救或異常狀態發生時，推送給指定聯絡人。</span>
+            </div>
+          </div>
+        </div>
+        <div class="phone-mockup" aria-label="App preview">
+          <div class="phone-screen">
+            <div class="app-status">
+              <b data-i18n="phone_room">父親｜臥室</b>
+              <strong data-i18n="phone_status">活動中</strong>
+              <span data-i18n="phone_live">LIVE STATUS</span>
+            </div>
+            <div class="record"><span>08:00</span><span data-i18n="phone_record_1">起床</span></div>
+            <div class="record"><span>08:15</span><span data-i18n="phone_record_2">進入浴廁</span></div>
+            <div class="record"><span>08:45</span><span data-i18n="phone_record_3">離開浴廁</span></div>
+            <button class="phone-btn" data-i18n="phone_button">一鍵通話</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-cta">
+      <div class="container">
+        <h2 data-i18n="cta_title">為照護安全，多一份保障</h2>
+        <p data-i18n="cta_text">若您正在規劃居家照護、長照機構、智慧建築或看護設備產品，歡迎告訴我們您的需求。</p>
+        <a href="contact.html" class="btn primary" data-i18n="cta_button">聯絡我們</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="layout.js"></script>
+  <script>
+    const translations = {
+      "zh-TW": {
+        page_title: "隱私看護方案｜Summit Technology",
+        hero_eyebrow: "Privacy Care Solution",
+        hero_title: "看不見的守護，最安心的陪伴。",
+        hero_lead: "以無影像感測技術建立隱私友善的照護系統，適用於浴室、臥室與長照機構，讓安全監測不再等於被監控。",
+        hero_tag_1: "無鏡頭感測",
+        hero_tag_2: "跌倒即時通報",
+        hero_tag_3: "智慧呼救",
+        hero_cta_1: "了解方案能力",
+        hero_cta_2: "聯絡我們",
+        hero_panel_1_title: "24 小時無感守護",
+        hero_panel_1_text: "長輩無需穿戴手環或裝置，也能持續掌握活動狀態。",
+        hero_panel_2_title: "私密空間可用",
+        hero_panel_2_text: "不拍影像、不錄畫面，浴室與廁所也能導入安全偵測。",
+        hero_panel_3_title: "異常事件即時通知",
+        hero_panel_3_text: "跌倒、久未活動或緊急呼救時，可推播給家屬或護理站。",
+        problem_title: "您是否也擔心這些「萬一」？",
+        problem_lead: "傳統監視器容易造成隱私疑慮，穿戴裝置又可能忘記佩戴。隱私看護方案，正是為這些真實照護痛點而設計。",
+        problem_1_title: "浴室滑倒無人知",
+        problem_1_text: "浴室與廁所是最需要安全監測、卻最不適合裝攝影機的空間。",
+        problem_2_title: "半夜意外無力呼救",
+        problem_2_text: "長輩可能離手機太遠，或身體虛弱到無法完成撥號求助。",
+        problem_3_title: "照護人力分身乏術",
+        problem_3_text: "機構夜間巡房壓力高，無法每分每秒掌握每一位住民狀態。",
+        feature_eyebrow: "Key Features",
+        feature_title: "四大核心優勢，全面守護",
+        feature_lead: "從感測、判斷、通報到聯繫，協助客戶建立可落地的智慧照護產品與系統方案。",
+        feature_1_label: "非攝影鏡頭，私密空間也能裝",
+        feature_1_title: "無影像感測，隱私零侵犯",
+        feature_1_text: "採用非攝影式感測技術，不拍攝、不錄影、不呈現人像畫面。適合臥室、浴室、廁所等需要高度隱私的照護環境。",
+        feature_1_point_1: "無鏡頭設計，降低隱私外洩疑慮",
+        feature_1_point_2: "黑暗、遮蔽與水氣環境下仍可進行狀態感測",
+        feature_2_title: "跌倒偵測，即時異常通報",
+        feature_2_text: "系統可判斷跌倒、長時間未活動等異常狀態，並將警報推送至家屬手機、管理後台或護理站，協助把握救援時間。",
+        feature_2_point_1: "支援跌倒與異常事件判斷",
+        feature_2_point_2: "可串接 App、後台或照護通知系統",
+        feature_2_label: "即時警報通知",
+        feature_3_label: "一句話啟動求助流程",
+        feature_3_title: "智慧呼救，降低求助門檻",
+        feature_3_text: "當使用者感到不適但尚未跌倒時，可透過語音、動作或外部按鍵觸發呼救流程，協助聯繫家屬或照護人員。",
+        feature_3_point_1: "適合居家緊急求助與機構照護場景",
+        feature_3_point_2: "可依客戶需求整合語音與通話模組",
+        feature_4_title: "無需穿戴，全天候無感守護",
+        feature_4_text: "吸頂或壁掛式安裝，不佔空間，也不需要長輩配戴手環、手錶或項鍊，避免忘記佩戴、忘記充電造成的照護空窗。",
+        scenario_title: "適用場景",
+        scenario_lead: "從家庭到機構，建立不侵犯隱私的安全照護方案。",
+        scenario_1_title: "居家照護",
+        scenario_1_text: "子女在外，也能透過 App 或通知系統掌握獨居父母的安全狀態。",
+        scenario_2_title: "長照與安養機構",
+        scenario_2_text: "提升夜間巡房效率，協助護理人員快速發現異常，降低照護風險。",
+        app_title: "App 與後台整合，一手掌握照護狀態",
+        app_lead: "可依產品定位與客戶需求，整合即時狀態、歷史紀錄、推播通知與緊急通話等功能。",
+        app_1_title: "即時狀態查看",
+        app_1_text: "掌握活動中、靜止、離床、進入浴廁等狀態。",
+        app_2_title: "歷史活動紀錄",
+        app_2_text: "記錄起床、如廁與活動時間，協助觀察生活作息。",
+        app_3_title: "緊急推播通知",
+        app_3_text: "跌倒、呼救或異常狀態發生時，推送給指定聯絡人。",
+        phone_room: "父親｜臥室",
+        phone_status: "活動中",
+        phone_live: "LIVE STATUS",
+        phone_record_1: "起床",
+        phone_record_2: "進入浴廁",
+        phone_record_3: "離開浴廁",
+        phone_button: "一鍵通話",
+        cta_title: "為照護安全，多一份保障",
+        cta_text: "若您正在規劃居家照護、長照機構、智慧建築或看護設備產品，歡迎告訴我們您的需求。",
+        cta_button: "聯絡我們"
+      },
+      "zh-CN": {
+        page_title: "隐私看护方案｜Summit Technology",
+        hero_eyebrow: "Privacy Care Solution",
+        hero_title: "看不见的守护，最安心的陪伴。",
+        hero_lead: "以无影像感测技术建立隐私友好的照护系统，适用于浴室、卧室与长照机构，让安全监测不再等于被监控。",
+        hero_tag_1: "无镜头感测",
+        hero_tag_2: "跌倒即时通报",
+        hero_tag_3: "智慧呼救",
+        hero_cta_1: "了解方案能力",
+        hero_cta_2: "联系我们",
+        hero_panel_1_title: "24 小时无感守护",
+        hero_panel_1_text: "长辈无需穿戴手环或装置，也能持续掌握活动状态。",
+        hero_panel_2_title: "私密空间可用",
+        hero_panel_2_text: "不拍影像、不录画面，浴室与厕所也能导入安全侦测。",
+        hero_panel_3_title: "异常事件即时通知",
+        hero_panel_3_text: "跌倒、久未活动或紧急呼救时，可推送给家属或护理站。",
+        problem_title: "您是否也担心这些“万一”？",
+        problem_lead: "传统监视器容易造成隐私疑虑，穿戴装置又可能忘记佩戴。隐私看护方案，正是为这些真实照护痛点而设计。",
+        problem_1_title: "浴室滑倒无人知",
+        problem_1_text: "浴室与厕所是最需要安全监测、却最不适合装摄像头的空间。",
+        problem_2_title: "半夜意外无力呼救",
+        problem_2_text: "长辈可能离手机太远，或身体虚弱到无法完成拨号求助。",
+        problem_3_title: "照护人力分身乏术",
+        problem_3_text: "机构夜间巡房压力高，无法每分每秒掌握每一位住民状态。",
+        feature_eyebrow: "Key Features",
+        feature_title: "四大核心优势，全面守护",
+        feature_lead: "从感测、判断、通报到联系，协助客户建立可落地的智慧照护产品与系统方案。",
+        feature_1_label: "非摄像镜头，私密空间也能装",
+        feature_1_title: "无影像感测，隐私零侵犯",
+        feature_1_text: "采用非摄像式感测技术，不拍摄、不录像、不呈现人像画面。适合卧室、浴室、厕所等需要高度隐私的照护环境。",
+        feature_1_point_1: "无镜头设计，降低隐私外泄疑虑",
+        feature_1_point_2: "黑暗、遮蔽与水汽环境下仍可进行状态感测",
+        feature_2_title: "跌倒侦测，即时异常通报",
+        feature_2_text: "系统可判断跌倒、长时间未活动等异常状态，并将警报推送至家属手机、管理后台或护理站，协助把握救援时间。",
+        feature_2_point_1: "支持跌倒与异常事件判断",
+        feature_2_point_2: "可串接 App、后台或照护通知系统",
+        feature_2_label: "即时警报通知",
+        feature_3_label: "一句话启动求助流程",
+        feature_3_title: "智慧呼救，降低求助门槛",
+        feature_3_text: "当使用者感到不适但尚未跌倒时，可通过语音、动作或外部按键触发呼救流程，协助联系家属或照护人员。",
+        feature_3_point_1: "适合居家紧急求助与机构照护场景",
+        feature_3_point_2: "可依客户需求整合语音与通话模块",
+        feature_4_title: "无需穿戴，全天候无感守护",
+        feature_4_text: "吸顶或壁挂式安装，不占空间，也不需要长辈佩戴手环、手表或项链，避免忘记佩戴、忘记充电造成的照护空窗。",
+        scenario_title: "适用场景",
+        scenario_lead: "从家庭到机构，建立不侵犯隐私的安全照护方案。",
+        scenario_1_title: "居家照护",
+        scenario_1_text: "子女在外，也能通过 App 或通知系统掌握独居父母的安全状态。",
+        scenario_2_title: "长照与安养机构",
+        scenario_2_text: "提升夜间巡房效率，协助护理人员快速发现异常，降低照护风险。",
+        app_title: "App 与后台整合，一手掌握照护状态",
+        app_lead: "可依产品定位与客户需求，整合即时状态、历史纪录、推送通知与紧急通话等功能。",
+        app_1_title: "即时状态查看",
+        app_1_text: "掌握活动中、静止、离床、进入浴厕等状态。",
+        app_2_title: "历史活动纪录",
+        app_2_text: "记录起床、如厕与活动时间，协助观察生活作息。",
+        app_3_title: "紧急推送通知",
+        app_3_text: "跌倒、呼救或异常状态发生时，推送给指定联系人。",
+        phone_room: "父亲｜卧室",
+        phone_status: "活动中",
+        phone_live: "LIVE STATUS",
+        phone_record_1: "起床",
+        phone_record_2: "进入浴厕",
+        phone_record_3: "离开浴厕",
+        phone_button: "一键通话",
+        cta_title: "为照护安全，多一份保障",
+        cta_text: "若您正在规划居家照护、长照机构、智慧建筑或看护设备产品，欢迎告诉我们您的需求。",
+        cta_button: "联系我们"
+      },
+      "en": {
+        page_title: "Privacy Care Solution | Summit Technology",
+        hero_eyebrow: "Privacy Care Solution",
+        hero_title: "Invisible protection, reassuring care.",
+        hero_lead: "A privacy-friendly care solution based on non-camera sensing, designed for bathrooms, bedrooms, homes and care facilities where safety matters without visual monitoring.",
+        hero_tag_1: "Camera-free sensing",
+        hero_tag_2: "Fall alerts",
+        hero_tag_3: "Smart SOS",
+        hero_cta_1: "Explore capabilities",
+        hero_cta_2: "Contact us",
+        hero_panel_1_title: "24/7 non-intrusive care",
+        hero_panel_1_text: "No wearable device is required to monitor activity status continuously.",
+        hero_panel_2_title: "Suitable for private spaces",
+        hero_panel_2_text: "No images or videos are captured, making it suitable for bathrooms and toilets.",
+        hero_panel_3_title: "Real-time abnormal event alerts",
+        hero_panel_3_text: "Fall, inactivity and SOS events can be pushed to family members or nursing stations.",
+        problem_title: "Are these care risks also on your mind?",
+        problem_lead: "Cameras raise privacy concerns, while wearables are often forgotten. This solution is designed for real care scenarios where both safety and privacy matter.",
+        problem_1_title: "Bathroom falls may go unnoticed",
+        problem_1_text: "Bathrooms need safety monitoring, but they are also the least suitable places for cameras.",
+        problem_2_title: "Unable to call for help at night",
+        problem_2_text: "The user may be far from the phone or too weak to complete an emergency call.",
+        problem_3_title: "Care staff cannot be everywhere",
+        problem_3_text: "Night rounds are demanding, and it is difficult to observe every resident every second.",
+        feature_eyebrow: "Key Features",
+        feature_title: "Four core capabilities for safer care",
+        feature_lead: "From sensing and event detection to alerts and communication, we help customers build deployable smart care products and systems.",
+        feature_1_label: "Camera-free sensing for private spaces",
+        feature_1_title: "Non-camera sensing with privacy protection",
+        feature_1_text: "The system does not capture, record or display personal images. It is suitable for bedrooms, bathrooms and other spaces where privacy is critical.",
+        feature_1_point_1: "Camera-free design to reduce privacy concerns",
+        feature_1_point_2: "Status sensing in darkness, steam and occluded environments",
+        feature_2_title: "Fall detection and abnormal event alerts",
+        feature_2_text: "The system can identify falls and prolonged inactivity, then push alerts to mobile apps, management dashboards or nursing stations to support timely response.",
+        feature_2_point_1: "Supports fall and abnormal event detection",
+        feature_2_point_2: "Can integrate with apps, dashboards and care notification systems",
+        feature_2_label: "Real-time alert notification",
+        feature_3_label: "Start help request with a simple trigger",
+        feature_3_title: "Smart SOS with lower help-seeking barriers",
+        feature_3_text: "When the user feels unwell but has not fallen, voice, gesture or external buttons can trigger the SOS workflow and connect with caregivers or family members.",
+        feature_3_point_1: "Suitable for home emergency and care facility scenarios",
+        feature_3_point_2: "Voice and call modules can be integrated based on customer needs",
+        feature_4_title: "No wearables. Continuous, effortless care.",
+        feature_4_text: "Ceiling or wall-mounted installation keeps the system out of the way and avoids gaps caused by forgotten wearables or uncharged devices.",
+        scenario_title: "Application Scenarios",
+        scenario_lead: "From homes to care facilities, build safer monitoring without invading privacy.",
+        scenario_1_title: "Home care",
+        scenario_1_text: "Family members can receive status and alerts through apps or notification systems even when they are away.",
+        scenario_2_title: "Care facilities",
+        scenario_2_text: "Improve night-round efficiency, help staff detect abnormalities faster and reduce care risks.",
+        app_title: "App and dashboard integration for care visibility",
+        app_lead: "Real-time status, history records, push alerts and emergency communication can be integrated based on product positioning and customer needs.",
+        app_1_title: "Real-time status",
+        app_1_text: "View activity, stillness, bed-exit and bathroom-entry status.",
+        app_2_title: "Activity history",
+        app_2_text: "Record wake-up, bathroom and activity events for daily routine observation.",
+        app_3_title: "Emergency push alerts",
+        app_3_text: "Notify selected contacts when falls, SOS or abnormal events occur.",
+        phone_room: "Father | Bedroom",
+        phone_status: "Active",
+        phone_live: "LIVE STATUS",
+        phone_record_1: "Wake up",
+        phone_record_2: "Entered bathroom",
+        phone_record_3: "Left bathroom",
+        phone_button: "Call now",
+        cta_title: "Add another layer of protection to care safety",
+        cta_text: "If you are planning home care, care facility, smart building or care device products, tell us what you need.",
+        cta_button: "Contact us"
+      }
+    };
+
+    function setLang(lang) {
+      const dict = {
+        ...(layoutTranslations[lang] || layoutTranslations["zh-TW"]),
+        ...(translations[lang] || translations["zh-TW"])
+      };
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.textContent = dict[key];
+      });
+      document.querySelectorAll(".lang button").forEach(btn => btn.classList.toggle("active", btn.dataset.lang === lang));
+      localStorage.setItem("summit-lang", lang);
+      document.title = dict.page_title || "Summit Technology";
+    }
+
+    document.querySelectorAll(".lang button").forEach(btn => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
+    setLang(localStorage.getItem("summit-lang") || "zh-TW");
+  </script>
+</body>
+</html>

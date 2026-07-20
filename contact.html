@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summit Technology</title>
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <meta name="description" content="Summit Technology 提供 Qualcomm 藍牙通訊、iCatch 影像系統與超聲波智慧照護方案，協助客戶完成 OEM / ODM 與產品整合開發。" />
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #5f6b7a;
+      --line: #e5eaf0;
+      --primary: #4f8f18;
+      --primary-2: #94c848;
+      --soft: #f0f8e8;
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding-top: 72px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .nav.container {
+      width: 100%;
+      max-width: none;
+      padding: 0 40px;
+      margin: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      height: 72px;
+      display: grid;
+      grid-template-columns: 260px 1fr 260px;
+      align-items: center;
+      gap: 24px;
+    }
+    .header-logo {
+      height: 60px;
+      width: auto;
+      display: block;
+      transform: translateY(4px);
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .brand small { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 5px; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2vw, 30px);
+      font-size: clamp(14px, 1.25vw, 17px);
+      font-weight: 700;
+      color: #263142;
+    }
+    .nav-links a,
+    .nav-dropdown-trigger {
+      white-space: nowrap;
+      transition: color .2s ease;
+    }
+    .nav-links a:hover,
+    .nav-dropdown-trigger:hover {
+      color: var(--primary);
+    }
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 72px;
+    }
+    .nav-dropdown-trigger::after {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-left: 8px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+    }
+    .nav-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      transform: translateY(8px);
+      min-width: 230px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, .12);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+      z-index: 1002;
+    }
+    .nav-item:hover .nav-dropdown {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    
+    .nav-dropdown a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-size: 16px;
+      color: #263142;
+    }
+
+    .nav-dropdown a:hover {
+      background: var(--soft);
+      color: var(--primary);
+    }
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .menu-toggle span {
+      width: 20px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--text);
+      transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .menu-toggle.is-open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle.is-open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.is-open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+    .lang {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-left: 0;
+    }
+    .lang-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex: 0 0 auto;
+    }
+    .lang button {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .lang button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .hero {
+      padding: 120px 0 72px;
+      background:
+        radial-gradient(circle at 75% 20%, rgba(148,200,72,.18), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 54px; align-items: center; }
+    .eyebrow {
+      color: var(--primary-2);
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: clamp(38px, 5vw, 64px); line-height: 1.08; margin: 0 0 22px; letter-spacing: -1.8px; }
+    .lead { font-size: 19px; color: var(--muted); max-width: 620px; margin: 0 0 32px; }
+    .cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+    }
+    .btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn.secondary { background: #fff; color: var(--primary); }
+
+    .hero-panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 22px 60px rgba(79, 143, 24, .10);
+    }
+    .platform-card {
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fbfdf9, #f0f8e8);
+      border: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .platform-card:last-child { margin-bottom: 0; }
+    .platform-card b { display: block; font-size: 18px; margin-bottom: 6px; }
+    .platform-card span { color: var(--muted); font-size: 14px; }
+
+    section { padding: 78px 0; }
+    .section-head { max-width: 720px; margin-bottom: 36px; }
+    .section-head h2 { font-size: clamp(30px, 3vw, 42px); line-height: 1.18; margin: 0 0 14px; letter-spacing: -.8px; }
+    .section-head p { color: var(--muted); margin: 0; font-size: 17px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      min-height: 250px;
+    }
+    .icon {
+      width: 44px; height: 44px;
+      border-radius: 13px;
+      display: grid; place-items: center;
+      background: var(--soft);
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 22px; }
+    .card p { margin: 0 0 18px; color: var(--muted); }
+    .list { margin: 0; padding: 0; list-style: none; color: #334155; font-size: 15px; }
+    .list li { padding: 7px 0; border-top: 1px solid var(--line); }
+
+    .capabilities { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .step {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 130px;
+    }
+    .step small { color: var(--primary-2); font-weight: 800; }
+    .step b { display: block; margin-top: 10px; }
+
+    .tech-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .tech-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 30px;
+    }
+    .tech-box strong { display: block; font-size: 26px; color: var(--primary); margin-bottom: 8px; }
+    .tech-box p { margin: 0; color: var(--muted); }
+
+    .contact {
+      background: linear-gradient(180deg, #ffffff, #f0f8e8);
+    }
+    .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 34px; align-items: start; }
+    form {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 28px;
+    }
+    label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea { min-height: 130px; resize: vertical; }
+    .form-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+    footer {
+      padding: 52px 0 28px;
+      color: var(--muted);
+      font-size: 14px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.3fr .8fr 1fr;
+      gap: 42px;
+      align-items: start;
+    }
+    .footer-brand img {
+      height: 58px;
+      width: auto;
+      display: block;
+      margin-bottom: 18px;
+    }
+    .footer-brand p {
+      margin: 0;
+      max-width: 380px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .footer-title {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .footer-links {
+      display: grid;
+      gap: 8px;
+    }
+    .footer-links a {
+      color: var(--muted);
+      transition: color .2s ease;
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    .footer-contact p {
+      margin: 0 0 8px;
+    }
+    .footer-office-title {
+      margin-top: 14px !important;
+      color: var(--text);
+      font-weight: 800;
+    }
+    .footer-bottom {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(79, 143, 24, .18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+      background: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, .contact-grid { grid-template-columns: 1fr; }
+      .grid-3, .tech-row { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      body { padding-top: 88px; }
+      .nav {
+        height: 88px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-logo {
+        height: 42px;
+        transform: translateY(2px);
+      }
+
+      .lang {
+        margin-left: auto;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .lang-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .lang button {
+        padding: 5px 8px;
+        font-size: 13px;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+        margin-left: 8px;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 88px;
+        left: 0;
+        width: 100%;
+        max-height: calc(100vh - 88px);
+        overflow-y: auto;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 14px 24px 22px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, .10);
+        font-size: 16px;
+        z-index: 1001;
+      }
+
+      .nav-links.is-open {
+        display: flex;
+      }
+
+      .nav-item {
+        width: 100%;
+        display: block;
+        height: auto;
+      }
+      .nav-dropdown-trigger::after {
+        display: none;
+      }
+
+      .nav-dropdown,
+      .nav-item:hover .nav-dropdown {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        width: 100%;
+        min-width: 0;
+        padding: 0 0 0 18px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .nav-links a,
+      .nav-dropdown-trigger {
+        display: block;
+        width: 100%;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        color: var(--text);
+        line-height: 1.35;
+        background: transparent;
+      }
+
+      .nav-dropdown a {
+        display: block;
+        width: 100%;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--muted);
+        background: transparent;
+      }
+
+      .nav-dropdown a:hover {
+        background: transparent;
+      }
+      .nav-links > a:last-child {
+        border-bottom: 0;
+      }
+      .hero { padding-top: 72px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="contact">
+      <div class="container">
+        <div class="contact-grid">
+          <div>
+            <div class="section-head">
+              <h2 data-i18n="contact_form_h2">告訴我們您的需求</h2>
+              <p data-i18n="contact_form_p">
+                您可以提供產品類型、目標市場、預計功能與目前開發階段，我們會依照內容回覆後續合作方式。
+              </p>
+            </div>
+
+            <div class="grid-3">
+              <article class="card">
+                <div class="icon">01</div>
+                <h3 data-i18n="contact_info_1_h3">方案評估</h3>
+                <p data-i18n="contact_info_1_p">協助確認產品需求與適合導入的技術平台。</p>
+              </article>
+              <article class="card">
+                <div class="icon">02</div>
+                <h3 data-i18n="contact_info_2_h3">客製合作</h3>
+                <p data-i18n="contact_info_2_p">討論功能、外觀、韌體、App 與量產需求。</p>
+              </article>
+              <article class="card">
+                <div class="icon">03</div>
+                <h3 data-i18n="contact_info_3_h3">量產支援</h3>
+                <p data-i18n="contact_info_3_p">提供樣機驗證、測試調整與後續版本支援。</p>
+              </article>
+            </div>
+          </div>
+
+          <form id="contactForm">
+            <label for="company" data-i18n="form_company">公司名稱</label>
+            <input id="company" name="company" type="text" autocomplete="organization">
+
+            <label for="name" data-i18n="form_name">聯絡人</label>
+            <input id="name" name="name" type="text" autocomplete="name">
+
+            <label for="email" data-i18n="form_email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email">
+
+            <label for="type" data-i18n="form_type">需求類型</label>
+            <select id="type" name="type">
+              <option value="Bluetooth Communication" data-i18n="form_type_bluetooth">藍牙通訊方案</option>
+              <option value="Imaging System" data-i18n="form_type_imaging">影像系統方案</option>
+              <option value="Smart Care Solution" data-i18n="form_type_care">智慧照護方案</option>
+              <option value="OEM ODM" data-i18n="form_type_oem">OEM / ODM 合作</option>
+              <option value="Other" data-i18n="form_type_other">其他需求</option>
+            </select>
+
+            <label for="message" data-i18n="form_message">需求說明</label>
+            <textarea id="message" name="message" data-i18n-placeholder="form_message_placeholder" placeholder="請簡單說明您的產品需求、目標市場、預計功能或目前開發階段。"></textarea>
+
+            <button class="btn primary" type="submit" data-i18n="form_submit">送出需求</button>
+            <p class="form-note" data-i18n="form_note">送出後將開啟您的 Email 軟體，請確認內容後寄出。</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="layout.js"></script>
+  <script>
+    const translations = {
+      "zh-TW": {
+        page_title: "聯絡我們｜翔米科技",
+        contact_eyebrow: "Contact Summit Technology",
+        contact_h1: "聯絡我們",
+        contact_lead: "如您正在評估藍牙通訊、影像系統或智慧照護相關方案，歡迎與我們聯繫。我們將依照您的產品需求、開發階段與合作模式，提供合適的方案建議。",
+        contact_cta_primary: "寄送合作需求",
+        contact_cta_secondary: "了解開發能力",
+        contact_panel_1_title: "Taiwan Office",
+        contact_panel_1_p: "新北市林口區文化二路一段 266 號 B1-8",
+        contact_panel_2_title: "Shenzhen Office",
+        contact_panel_2_p: "深圳團隊負責供應鏈協調、開發支援與量產溝通。",
+        contact_panel_3_title: "Email",
+        contact_form_h2: "告訴我們您的需求",
+        contact_form_p: "您可以提供產品類型、目標市場、預計功能與目前開發階段，我們會依照內容回覆後續合作方式。",
+        contact_info_1_h3: "方案評估",
+        contact_info_1_p: "協助確認產品需求與適合導入的技術平台。",
+        contact_info_2_h3: "客製合作",
+        contact_info_2_p: "討論功能、外觀、韌體、App 與量產需求。",
+        contact_info_3_h3: "量產支援",
+        contact_info_3_p: "提供樣機驗證、測試調整與後續版本支援。",
+        form_company: "公司名稱",
+        form_name: "聯絡人",
+        form_email: "Email",
+        form_type: "需求類型",
+        form_type_bluetooth: "藍牙通訊方案",
+        form_type_imaging: "影像系統方案",
+        form_type_care: "智慧照護方案",
+        form_type_oem: "OEM / ODM 合作",
+        form_type_other: "其他需求",
+        form_message: "需求說明",
+        form_message_placeholder: "請簡單說明您的產品需求、目標市場、預計功能或目前開發階段。",
+        form_submit: "送出需求",
+        form_note: "送出後將開啟您的 Email 軟體，請確認內容後寄出。"
+      },
+      "zh-CN": {
+        page_title: "联系我们｜深圳翔迈特科技",
+        contact_eyebrow: "Contact Summit Technology",
+        contact_h1: "联系我们",
+        contact_lead: "如您正在评估蓝牙通讯、影像系统或智慧照护相关方案，欢迎与我们联系。我们将依照您的产品需求、开发阶段与合作模式，提供合适的方案建议。",
+        contact_cta_primary: "发送合作需求",
+        contact_cta_secondary: "了解开发能力",
+        contact_panel_1_title: "Taiwan Office",
+        contact_panel_1_p: "新北市林口区文化二路一段 266 号 B1-8",
+        contact_panel_2_title: "Shenzhen Office",
+        contact_panel_2_p: "深圳团队负责供应链协调、开发支持与量产沟通。",
+        contact_panel_3_title: "Email",
+        contact_form_h2: "告诉我们您的需求",
+        contact_form_p: "您可以提供产品类型、目标市场、预计功能与目前开发阶段，我们会依照内容回复后续合作方式。",
+        contact_info_1_h3: "方案评估",
+        contact_info_1_p: "协助确认产品需求与适合导入的技术平台。",
+        contact_info_2_h3: "客制合作",
+        contact_info_2_p: "讨论功能、外观、固件、App 与量产需求。",
+        contact_info_3_h3: "量产支持",
+        contact_info_3_p: "提供样机验证、测试调整与后续版本支持。",
+        form_company: "公司名称",
+        form_name: "联系人",
+        form_email: "Email",
+        form_type: "需求类型",
+        form_type_bluetooth: "蓝牙通讯方案",
+        form_type_imaging: "影像系统方案",
+        form_type_care: "智慧照护方案",
+        form_type_oem: "OEM / ODM 合作",
+        form_type_other: "其他需求",
+        form_message: "需求说明",
+        form_message_placeholder: "请简单说明您的产品需求、目标市场、预计功能或目前开发阶段。",
+        form_submit: "送出需求",
+        form_note: "送出后将开启您的 Email 软件，请确认内容后寄出。"
+      },
+      "en": {
+        page_title: "Contact Us | Summit Technology",
+        contact_eyebrow: "Contact Summit Technology",
+        contact_h1: "Contact Us",
+        contact_lead: "If you are evaluating Bluetooth communication, imaging system, or smart care solutions, feel free to contact us. We will provide suitable suggestions based on your product requirements, development stage, and cooperation model.",
+        contact_cta_primary: "Send Inquiry",
+        contact_cta_secondary: "View Capabilities",
+        contact_panel_1_title: "Taiwan Office",
+        contact_panel_1_p: "B1-8, No. 266, Sec. 1, Wenhua 2nd Rd., Linkou Dist., New Taipei City, Taiwan",
+        contact_panel_2_title: "Shenzhen Office",
+        contact_panel_2_p: "Our Shenzhen team supports supply chain coordination, development support, and production communication.",
+        contact_panel_3_title: "Email",
+        contact_form_h2: "Tell Us About Your Project",
+        contact_form_p: "You can provide product type, target market, planned features, and current development stage. We will reply based on the information provided.",
+        contact_info_1_h3: "Solution Review",
+        contact_info_1_p: "Help confirm product requirements and suitable technology platforms.",
+        contact_info_2_h3: "Custom Cooperation",
+        contact_info_2_p: "Discuss features, appearance, firmware, App, and production requirements.",
+        contact_info_3_h3: "Production Support",
+        contact_info_3_p: "Provide prototype validation, testing adjustment, and future version support.",
+        form_company: "Company",
+        form_name: "Contact Person",
+        form_email: "Email",
+        form_type: "Inquiry Type",
+        form_type_bluetooth: "Bluetooth Communication Solution",
+        form_type_imaging: "Imaging System Solution",
+        form_type_care: "Smart Care Solution",
+        form_type_oem: "OEM / ODM Cooperation",
+        form_type_other: "Other Inquiry",
+        form_message: "Message",
+        form_message_placeholder: "Please briefly describe your product requirements, target market, planned features, or current development stage.",
+        form_submit: "Submit Inquiry",
+        form_note: "After submission, your email client will open. Please confirm the content before sending."
+      }
+    };
+
+
+    function setLang(lang) {
+      const dict = {
+        ...(layoutTranslations[lang] || layoutTranslations["zh-TW"]),
+        ...(translations[lang] || translations["zh-TW"])
+      };
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.textContent = dict[key];
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (dict[key]) el.setAttribute("placeholder", dict[key]);
+      });
+      document.querySelectorAll(".lang button").forEach(btn => btn.classList.toggle("active", btn.dataset.lang === lang));
+      localStorage.setItem("summit-lang", lang);
+      document.title = dict.page_title || "Summit Technology";
+    }
+
+    document.querySelectorAll(".lang button").forEach(btn => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
+    setLang(localStorage.getItem("summit-lang") || "zh-TW");
+
+    const email = "sales@summitech.com";
+    const emailText = document.getElementById("emailText");
+    if (emailText) emailText.textContent = email;
+
+    const contactForm = document.getElementById("contactForm");
+    if (contactForm) contactForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const data = new FormData(this);
+      const subject = encodeURIComponent(`[Summit Technology Inquiry] ${data.get("company") || ""}`);
+      const body = encodeURIComponent(
+        `Company: ${data.get("company")}\n` +
+        `Name: ${data.get("name")}\n` +
+        `Email: ${data.get("email")}\n` +
+        `Type: ${data.get("type")}\n\n` +
+        `Message:\n${data.get("message")}`
+      );
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    });
+  </script>
+</body>
+</html>

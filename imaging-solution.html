@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summit Technology</title>
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <meta name="description" content="Summit Technology 提供 Qualcomm 藍牙通訊、iCatch 影像系統與超聲波智慧照護方案，協助客戶完成 OEM / ODM 與產品整合開發。" />
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #5f6b7a;
+      --line: #e5eaf0;
+      --primary: #4f8f18;
+      --primary-2: #94c848;
+      --soft: #f0f8e8;
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding-top: 72px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .nav.container {
+      width: 100%;
+      max-width: none;
+      padding: 0 40px;
+      margin: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      height: 72px;
+      display: grid;
+      grid-template-columns: 260px 1fr 260px;
+      align-items: center;
+      gap: 24px;
+    }
+    .header-logo {
+      height: 60px;
+      width: auto;
+      display: block;
+      transform: translateY(4px);
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .brand small { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 5px; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2vw, 30px);
+      font-size: clamp(14px, 1.25vw, 17px);
+      font-weight: 700;
+      color: #263142;
+    }
+    .nav-links a,
+    .nav-dropdown-trigger {
+      white-space: nowrap;
+      transition: color .2s ease;
+    }
+    .nav-links a:hover,
+    .nav-dropdown-trigger:hover {
+      color: var(--primary);
+    }
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 72px;
+    }
+    .nav-dropdown-trigger::after {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-left: 8px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+    }
+    .nav-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      transform: translateY(8px);
+      min-width: 230px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, .12);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+      z-index: 1002;
+    }
+    .nav-item:hover .nav-dropdown {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    
+    .nav-dropdown a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-size: 16px;
+      color: #263142;
+    }
+
+    .nav-dropdown a:hover {
+      background: var(--soft);
+      color: var(--primary);
+    }
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .menu-toggle span {
+      width: 20px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--text);
+      transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .menu-toggle.is-open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle.is-open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.is-open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+    .lang {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-left: 0;
+    }
+    .lang-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex: 0 0 auto;
+    }
+    .lang button {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .lang button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .hero {
+      padding: 120px 0 72px;
+      background:
+        radial-gradient(circle at 75% 20%, rgba(148,200,72,.18), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 54px; align-items: center; }
+    .eyebrow {
+      color: var(--primary-2);
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: clamp(38px, 5vw, 64px); line-height: 1.08; margin: 0 0 22px; letter-spacing: -1.8px; }
+    .lead { font-size: 19px; color: var(--muted); max-width: 620px; margin: 0 0 32px; }
+    .cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+    }
+    .btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn.secondary { background: #fff; color: var(--primary); }
+
+    .hero-panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 22px 60px rgba(79, 143, 24, .10);
+    }
+    .platform-card {
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fbfdf9, #f0f8e8);
+      border: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .platform-card:last-child { margin-bottom: 0; }
+    .platform-card b { display: block; font-size: 18px; margin-bottom: 6px; }
+    .platform-card span { color: var(--muted); font-size: 14px; }
+
+    section { padding: 78px 0; }
+    .section-head { max-width: 720px; margin-bottom: 36px; }
+    .section-head h2 { font-size: clamp(30px, 3vw, 42px); line-height: 1.18; margin: 0 0 14px; letter-spacing: -.8px; }
+    .section-head p { color: var(--muted); margin: 0; font-size: 17px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      min-height: 250px;
+    }
+    .icon {
+      width: 44px; height: 44px;
+      border-radius: 13px;
+      display: grid; place-items: center;
+      background: var(--soft);
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 22px; }
+    .card p { margin: 0 0 18px; color: var(--muted); }
+    .list { margin: 0; padding: 0; list-style: none; color: #334155; font-size: 15px; }
+    .list li { padding: 7px 0; border-top: 1px solid var(--line); }
+
+    .capabilities { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .step {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 130px;
+    }
+    .step small { color: var(--primary-2); font-weight: 800; }
+    .step b { display: block; margin-top: 10px; }
+
+    .tech-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .tech-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 30px;
+    }
+    .tech-box strong { display: block; font-size: 26px; color: var(--primary); margin-bottom: 8px; }
+    .tech-box p { margin: 0; color: var(--muted); }
+
+    .contact {
+      background: linear-gradient(180deg, #ffffff, #f0f8e8);
+    }
+    .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 34px; align-items: start; }
+    form {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 28px;
+    }
+    label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea { min-height: 130px; resize: vertical; }
+    .form-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+    footer {
+      padding: 52px 0 28px;
+      color: var(--muted);
+      font-size: 14px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.3fr .8fr 1fr;
+      gap: 42px;
+      align-items: start;
+    }
+    .footer-brand img {
+      height: 58px;
+      width: auto;
+      display: block;
+      margin-bottom: 18px;
+    }
+    .footer-brand p {
+      margin: 0;
+      max-width: 380px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .footer-title {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .footer-links {
+      display: grid;
+      gap: 8px;
+    }
+    .footer-links a {
+      color: var(--muted);
+      transition: color .2s ease;
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    .footer-contact p {
+      margin: 0 0 8px;
+    }
+    .footer-office-title {
+      margin-top: 14px !important;
+      color: var(--text);
+      font-weight: 800;
+    }
+    .footer-bottom {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(79, 143, 24, .18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+      background: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, .contact-grid { grid-template-columns: 1fr; }
+      .grid-3, .tech-row { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      body { padding-top: 88px; }
+      .nav {
+        height: 88px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-logo {
+        height: 42px;
+        transform: translateY(2px);
+      }
+
+      .lang {
+        margin-left: auto;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .lang-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .lang button {
+        padding: 5px 8px;
+        font-size: 13px;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+        margin-left: 8px;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 88px;
+        left: 0;
+        width: 100%;
+        max-height: calc(100vh - 88px);
+        overflow-y: auto;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 14px 24px 22px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, .10);
+        font-size: 16px;
+        z-index: 1001;
+      }
+
+      .nav-links.is-open {
+        display: flex;
+      }
+
+      .nav-item {
+        width: 100%;
+        display: block;
+        height: auto;
+      }
+      .nav-dropdown-trigger::after {
+        display: none;
+      }
+
+      .nav-dropdown,
+      .nav-item:hover .nav-dropdown {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        width: 100%;
+        min-width: 0;
+        padding: 0 0 0 18px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .nav-links a,
+      .nav-dropdown-trigger {
+        display: block;
+        width: 100%;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        color: var(--text);
+        line-height: 1.35;
+        background: transparent;
+      }
+
+      .nav-dropdown a {
+        display: block;
+        width: 100%;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--muted);
+        background: transparent;
+      }
+
+      .nav-dropdown a:hover {
+        background: transparent;
+      }
+      .nav-links > a:last-child {
+        border-bottom: 0;
+      }
+      .hero { padding-top: 72px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="hero imaging-hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow" data-i18n="img_eyebrow">Imaging System Solution</div>
+            <h1 data-i18n="img_h1">影像系統方案</h1>
+            <p class="lead" data-i18n="img_lead">
+              提供適用於行車記錄、移動影像與戶外設備的影像系統整合方案，協助客戶完成從感光元件、鏡頭模組、影像處理到 Wi-Fi App 連線的產品導入。
+            </p>
+            <div class="cta">
+              <a class="btn primary" href="contact.html data-i18n="img_cta_primary">洽詢方案合作</a>
+              <a class="btn secondary" href="capabilities.html" data-i18n="img_cta_secondary">了解開發能力</a>
+            </div>
+          </div>
+
+          <div class="hero-panel">
+            <div class="platform-card">
+              <b data-i18n="img_panel_1_title">Camera Module</b>
+              <span data-i18n="img_panel_1_p">感光元件、鏡頭規格、視角配置與模組整合。</span>
+            </div>
+            <div class="platform-card">
+              <b data-i18n="img_panel_2_title">Video Processing</b>
+              <span data-i18n="img_panel_2_p">影像錄製、編碼處理、循環錄影與事件鎖檔應用。</span>
+            </div>
+            <div class="platform-card">
+              <b data-i18n="img_panel_3_title">Wi-Fi App Integration</b>
+              <span data-i18n="img_panel_3_p">Wi-Fi 連線、手機預覽、檔案下載與 App 操作流程。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="img_features_h2">方案核心能力</h2>
+          <p data-i18n="img_features_p">
+            以影像平台、鏡頭模組與嵌入式系統整合為基礎，打造穩定、清晰且可量產的影像記錄產品。
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">01</div>
+            <h3 data-i18n="img_feature_1_h3">影像平台整合</h3>
+            <p data-i18n="img_feature_1_p">
+              依照產品定位選擇合適影像平台，整合錄影、儲存、傳輸與電源管理架構。
+            </p>
+            <ul class="list">
+              <li data-i18n="img_feature_1_li1">1080p / 2K / 4K 影像應用</li>
+              <li data-i18n="img_feature_1_li2">單鏡頭 / 雙鏡頭架構</li>
+              <li data-i18n="img_feature_1_li3">錄影、拍照與檔案管理</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">02</div>
+            <h3 data-i18n="img_feature_2_h3">鏡頭與畫質調校</h3>
+            <p data-i18n="img_feature_2_p">
+              針對不同使用場景，調整視角、曝光、色彩與低光環境下的影像表現。
+            </p>
+            <ul class="list">
+              <li data-i18n="img_feature_2_li1">鏡頭視角與模組選型</li>
+              <li data-i18n="img_feature_2_li2">日夜場景畫質調整</li>
+              <li data-i18n="img_feature_2_li3">戶外與移動環境優化</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">03</div>
+            <h3 data-i18n="img_feature_3_h3">無線連線與 App 應用</h3>
+            <p data-i18n="img_feature_3_p">
+              整合 Wi-Fi 連線、手機預覽、檔案下載與設定管理，提升產品使用體驗。
+            </p>
+            <ul class="list">
+              <li data-i18n="img_feature_3_li1">Wi-Fi 即時預覽</li>
+              <li data-i18n="img_feature_3_li2">影片下載與檔案備份</li>
+              <li data-i18n="img_feature_3_li3">App 參數設定與管理</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="capabilities">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="img_app_h2">適用產品類型</h2>
+          <p data-i18n="img_app_p">
+            可依照產品結構、供電方式與應用場景，導入至不同型態的影像記錄設備。
+          </p>
+        </div>
+
+        <div class="tech-row">
+          <article class="tech-box">
+            <strong data-i18n="img_app_1_title">Dash Camera</strong>
+            <p data-i18n="img_app_1_p">機車、車用與移動載具的行車記錄、事件錄影與循環錄影應用。</p>
+          </article>
+
+          <article class="tech-box">
+            <strong data-i18n="img_app_2_title">Outdoor Camera Device</strong>
+            <p data-i18n="img_app_2_p">戶外活動、運動記錄、輕量隨身影像與防水型影像設備。</p>
+          </article>
+
+          <article class="tech-box">
+            <strong data-i18n="img_app_3_title">Embedded Vision Product</strong>
+            <p data-i18n="img_app_3_p">客製化影像模組、雙鏡頭裝置、Wi-Fi 影像設備與嵌入式視覺產品。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="img_process_h2">導入流程</h2>
+          <p data-i18n="img_process_p">
+            從影像規格、鏡頭選型到樣機驗證與量產支援，協助客戶建立可靠的影像產品方案。
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <small>01</small>
+            <b data-i18n="img_step_1">需求確認</b>
+          </div>
+          <div class="step">
+            <small>02</small>
+            <b data-i18n="img_step_2">平台選型</b>
+          </div>
+          <div class="step">
+            <small>03</small>
+            <b data-i18n="img_step_3">鏡頭配置</b>
+          </div>
+          <div class="step">
+            <small>04</small>
+            <b data-i18n="img_step_4">畫質調校</b>
+          </div>
+          <div class="step">
+            <small>05</small>
+            <b data-i18n="img_step_5">樣機驗證</b>
+          </div>
+          <div class="step">
+            <small>06</small>
+            <b data-i18n="img_step_6">量產支援</b>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="layout.js"></script>
+  <script>
+    const translations = {
+      "zh-TW": {
+        page_title: "影像系統方案｜翔米科技",
+        img_eyebrow: "Imaging System Solution",
+        img_h1: "影像系統方案",
+        img_lead: "提供適用於行車記錄、移動影像與戶外設備的影像系統整合方案，協助客戶完成從感光元件、鏡頭模組、影像處理到 Wi-Fi App 連線的產品導入。",
+        img_cta_primary: "洽詢方案合作",
+        img_cta_secondary: "了解開發能力",
+        img_panel_1_title: "Camera Module",
+        img_panel_1_p: "感光元件、鏡頭規格、視角配置與模組整合。",
+        img_panel_2_title: "Video Processing",
+        img_panel_2_p: "影像錄製、編碼處理、循環錄影與事件鎖檔應用。",
+        img_panel_3_title: "Wi-Fi App Integration",
+        img_panel_3_p: "Wi-Fi 連線、手機預覽、檔案下載與 App 操作流程。",
+        img_features_h2: "方案核心能力",
+        img_features_p: "以影像平台、鏡頭模組與嵌入式系統整合為基礎，打造穩定、清晰且可量產的影像記錄產品。",
+        img_feature_1_h3: "影像平台整合",
+        img_feature_1_p: "依照產品定位選擇合適影像平台，整合錄影、儲存、傳輸與電源管理架構。",
+        img_feature_1_li1: "1080p / 2K / 4K 影像應用",
+        img_feature_1_li2: "單鏡頭 / 雙鏡頭架構",
+        img_feature_1_li3: "錄影、拍照與檔案管理",
+        img_feature_2_h3: "鏡頭與畫質調校",
+        img_feature_2_p: "針對不同使用場景，調整視角、曝光、色彩與低光環境下的影像表現。",
+        img_feature_2_li1: "鏡頭視角與模組選型",
+        img_feature_2_li2: "日夜場景畫質調整",
+        img_feature_2_li3: "戶外與移動環境優化",
+        img_feature_3_h3: "無線連線與 App 應用",
+        img_feature_3_p: "整合 Wi-Fi 連線、手機預覽、檔案下載與設定管理，提升產品使用體驗。",
+        img_feature_3_li1: "Wi-Fi 即時預覽",
+        img_feature_3_li2: "影片下載與檔案備份",
+        img_feature_3_li3: "App 參數設定與管理",
+        img_app_h2: "適用產品類型",
+        img_app_p: "可依照產品結構、供電方式與應用場景，導入至不同型態的影像記錄設備。",
+        img_app_1_title: "Dash Camera",
+        img_app_1_p: "機車、車用與移動載具的行車記錄、事件錄影與循環錄影應用。",
+        img_app_2_title: "Outdoor Camera Device",
+        img_app_2_p: "戶外活動、運動記錄、輕量隨身影像與防水型影像設備。",
+        img_app_3_title: "Embedded Vision Product",
+        img_app_3_p: "客製化影像模組、雙鏡頭裝置、Wi-Fi 影像設備與嵌入式視覺產品。",
+        img_process_h2: "導入流程",
+        img_process_p: "從影像規格、鏡頭選型到樣機驗證與量產支援，協助客戶建立可靠的影像產品方案。",
+        img_step_1: "需求確認",
+        img_step_2: "平台選型",
+        img_step_3: "鏡頭配置",
+        img_step_4: "畫質調校",
+        img_step_5: "樣機驗證",
+        img_step_6: "量產支援"
+      },
+      "zh-CN": {
+        page_title: "影像系统方案｜深圳翔迈特科技",
+        img_eyebrow: "Imaging System Solution",
+        img_h1: "影像系统方案",
+        img_lead: "提供适用于行车记录、移动影像与户外设备的影像系统整合方案，协助客户完成从感光元件、镜头模组、影像处理到 Wi-Fi App 连接的产品导入。",
+        img_cta_primary: "洽询方案合作",
+        img_cta_secondary: "了解开发能力",
+        img_panel_1_title: "Camera Module",
+        img_panel_1_p: "感光元件、镜头规格、视角配置与模组整合。",
+        img_panel_2_title: "Video Processing",
+        img_panel_2_p: "影像录制、编码处理、循环录影与事件锁档应用。",
+        img_panel_3_title: "Wi-Fi App Integration",
+        img_panel_3_p: "Wi-Fi 连接、手机预览、文件下载与 App 操作流程。",
+        img_features_h2: "方案核心能力",
+        img_features_p: "以影像平台、镜头模组与嵌入式系统整合为基础，打造稳定、清晰且可量产的影像记录产品。",
+        img_feature_1_h3: "影像平台整合",
+        img_feature_1_p: "依照产品定位选择合适影像平台，整合录影、储存、传输与电源管理架构。",
+        img_feature_1_li1: "1080p / 2K / 4K 影像应用",
+        img_feature_1_li2: "单镜头 / 双镜头架构",
+        img_feature_1_li3: "录影、拍照与文件管理",
+        img_feature_2_h3: "镜头与画质调校",
+        img_feature_2_p: "针对不同使用场景，调整视角、曝光、色彩与低光环境下的影像表现。",
+        img_feature_2_li1: "镜头视角与模组选型",
+        img_feature_2_li2: "日夜场景画质调整",
+        img_feature_2_li3: "户外与移动环境优化",
+        img_feature_3_h3: "无线连接与 App 应用",
+        img_feature_3_p: "整合 Wi-Fi 连接、手机预览、文件下载与设置管理，提升产品使用体验。",
+        img_feature_3_li1: "Wi-Fi 即时预览",
+        img_feature_3_li2: "影片下载与文件备份",
+        img_feature_3_li3: "App 参数设置与管理",
+        img_app_h2: "适用产品类型",
+        img_app_p: "可依照产品结构、供电方式与应用场景，导入至不同型态的影像记录设备。",
+        img_app_1_title: "Dash Camera",
+        img_app_1_p: "机车、车用与移动载具的行车记录、事件录影与循环录影应用。",
+        img_app_2_title: "Outdoor Camera Device",
+        img_app_2_p: "户外活动、运动记录、轻量随身影像与防水型影像设备。",
+        img_app_3_title: "Embedded Vision Product",
+        img_app_3_p: "客制化影像模组、双镜头装置、Wi-Fi 影像设备与嵌入式视觉产品。",
+        img_process_h2: "导入流程",
+        img_process_p: "从影像规格、镜头选型到样机验证与量产支持，协助客户建立可靠的影像产品方案。",
+        img_step_1: "需求确认",
+        img_step_2: "平台选型",
+        img_step_3: "镜头配置",
+        img_step_4: "画质调校",
+        img_step_5: "样机验证",
+        img_step_6: "量产支持"
+      },
+      "en": {
+        page_title: "Imaging System Solution | Summit Technology",
+        img_eyebrow: "Imaging System Solution",
+        img_h1: "Imaging System Solution",
+        img_lead: "We provide imaging system integration solutions for dash cameras, mobile video, and outdoor devices, supporting customers from image sensors, lens modules, and video processing to Wi-Fi App integration.",
+        img_cta_primary: "Contact Us",
+        img_cta_secondary: "View Capabilities",
+        img_panel_1_title: "Camera Module",
+        img_panel_1_p: "Image sensors, lens specifications, field-of-view configuration, and module integration.",
+        img_panel_2_title: "Video Processing",
+        img_panel_2_p: "Video recording, encoding, loop recording, and event file lock applications.",
+        img_panel_3_title: "Wi-Fi App Integration",
+        img_panel_3_p: "Wi-Fi connectivity, mobile preview, file download, and App operation flows.",
+        img_features_h2: "Core Capabilities",
+        img_features_p: "Based on imaging platforms, camera modules, and embedded system integration, we help build stable, clear, and production-ready video recording products.",
+        img_feature_1_h3: "Imaging Platform Integration",
+        img_feature_1_p: "Select suitable imaging platforms based on product positioning, integrating recording, storage, transmission, and power management architecture.",
+        img_feature_1_li1: "1080p / 2K / 4K video applications",
+        img_feature_1_li2: "Single-camera / dual-camera architecture",
+        img_feature_1_li3: "Recording, photo capture, and file management",
+        img_feature_2_h3: "Lens and Image Tuning",
+        img_feature_2_p: "Adjust field of view, exposure, color, and low-light performance for different usage scenarios.",
+        img_feature_2_li1: "Lens field of view and module selection",
+        img_feature_2_li2: "Day and night image tuning",
+        img_feature_2_li3: "Outdoor and mobile environment optimization",
+        img_feature_3_h3: "Wireless and App Integration",
+        img_feature_3_p: "Integrate Wi-Fi connectivity, mobile preview, file download, and setting management to improve user experience.",
+        img_feature_3_li1: "Wi-Fi live preview",
+        img_feature_3_li2: "Video download and file backup",
+        img_feature_3_li3: "App parameter setting and management",
+        img_app_h2: "Applicable Product Types",
+        img_app_p: "Solutions can be integrated into different video recording devices based on product structure, power design, and application scenarios.",
+        img_app_1_title: "Dash Camera",
+        img_app_1_p: "Dash recording, event recording, and loop recording applications for motorcycles, vehicles, and mobility devices.",
+        img_app_2_title: "Outdoor Camera Device",
+        img_app_2_p: "Outdoor activity, sports recording, lightweight portable video, and waterproof camera devices.",
+        img_app_3_title: "Embedded Vision Product",
+        img_app_3_p: "Customized camera modules, dual-camera devices, Wi-Fi video devices, and embedded vision products.",
+        img_process_h2: "Integration Process",
+        img_process_p: "From video specifications and lens selection to prototype validation and production support, we help customers build reliable imaging product solutions.",
+        img_step_1: "Requirement Review",
+        img_step_2: "Platform Selection",
+        img_step_3: "Lens Configuration",
+        img_step_4: "Image Tuning",
+        img_step_5: "Prototype Validation",
+        img_step_6: "Production Support"
+      }
+    };
+
+
+    function setLang(lang) {
+      const dict = {
+        ...(layoutTranslations[lang] || layoutTranslations["zh-TW"]),
+        ...(translations[lang] || translations["zh-TW"])
+      };
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.textContent = dict[key];
+      });
+      document.querySelectorAll(".lang button").forEach(btn => btn.classList.toggle("active", btn.dataset.lang === lang));
+      localStorage.setItem("summit-lang", lang);
+      document.title = dict.page_title || "Summit Technology";
+    }
+
+    document.querySelectorAll(".lang button").forEach(btn => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
+    setLang(localStorage.getItem("summit-lang") || "zh-TW");
+
+  </script>
+</body>
+</html>

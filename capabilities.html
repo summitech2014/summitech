@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summit Technology</title>
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <meta name="description" content="Summit Technology 提供 Qualcomm 藍牙通訊、iCatch 影像系統與超聲波智慧照護方案，協助客戶完成 OEM / ODM 與產品整合開發。" />
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #5f6b7a;
+      --line: #e5eaf0;
+      --primary: #4f8f18;
+      --primary-2: #94c848;
+      --soft: #f0f8e8;
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding-top: 72px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .nav.container {
+      width: 100%;
+      max-width: none;
+      padding: 0 40px;
+      margin: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      height: 72px;
+      display: grid;
+      grid-template-columns: 260px 1fr 260px;
+      align-items: center;
+      gap: 24px;
+    }
+    .header-logo {
+      height: 60px;
+      width: auto;
+      display: block;
+      transform: translateY(4px);
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .brand small { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 5px; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2vw, 30px);
+      font-size: clamp(14px, 1.25vw, 17px);
+      font-weight: 700;
+      color: #263142;
+    }
+    .nav-links a,
+    .nav-dropdown-trigger {
+      white-space: nowrap;
+      transition: color .2s ease;
+    }
+    .nav-links a:hover,
+    .nav-dropdown-trigger:hover {
+      color: var(--primary);
+    }
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 72px;
+    }
+    .nav-dropdown-trigger::after {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-left: 8px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+    }
+    .nav-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      transform: translateY(8px);
+      min-width: 230px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, .12);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+      z-index: 1002;
+    }
+    .nav-item:hover .nav-dropdown {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    
+    .nav-dropdown a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-size: 16px;
+      color: #263142;
+    }
+
+    .nav-dropdown a:hover {
+      background: var(--soft);
+      color: var(--primary);
+    }
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .menu-toggle span {
+      width: 20px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--text);
+      transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .menu-toggle.is-open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle.is-open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.is-open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+    .lang {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-left: 0;
+    }
+    .lang-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex: 0 0 auto;
+    }
+    .lang button {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .lang button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .hero {
+      padding: 120px 0 72px;
+      background:
+        radial-gradient(circle at 75% 20%, rgba(148,200,72,.18), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 54px; align-items: center; }
+    .eyebrow {
+      color: var(--primary-2);
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: clamp(38px, 5vw, 64px); line-height: 1.08; margin: 0 0 22px; letter-spacing: -1.8px; }
+    .lead { font-size: 19px; color: var(--muted); max-width: 620px; margin: 0 0 32px; }
+    .cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+    }
+    .btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn.secondary { background: #fff; color: var(--primary); }
+
+    .hero-panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 22px 60px rgba(79, 143, 24, .10);
+    }
+    .platform-card {
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fbfdf9, #f0f8e8);
+      border: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .platform-card:last-child { margin-bottom: 0; }
+    .platform-card b { display: block; font-size: 18px; margin-bottom: 6px; }
+    .platform-card span { color: var(--muted); font-size: 14px; }
+
+    section { padding: 78px 0; }
+    .section-head { max-width: 720px; margin-bottom: 36px; }
+    .section-head h2 { font-size: clamp(30px, 3vw, 42px); line-height: 1.18; margin: 0 0 14px; letter-spacing: -.8px; }
+    .section-head p { color: var(--muted); margin: 0; font-size: 17px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      min-height: 250px;
+    }
+    .icon {
+      width: 44px; height: 44px;
+      border-radius: 13px;
+      display: grid; place-items: center;
+      background: var(--soft);
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 22px; }
+    .card p { margin: 0 0 18px; color: var(--muted); }
+    .list { margin: 0; padding: 0; list-style: none; color: #334155; font-size: 15px; }
+    .list li { padding: 7px 0; border-top: 1px solid var(--line); }
+
+    .capabilities { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .step {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 130px;
+    }
+    .step small { color: var(--primary-2); font-weight: 800; }
+    .step b { display: block; margin-top: 10px; }
+
+    .tech-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .tech-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 30px;
+    }
+    .tech-box strong { display: block; font-size: 26px; color: var(--primary); margin-bottom: 8px; }
+    .tech-box p { margin: 0; color: var(--muted); }
+
+    .contact {
+      background: linear-gradient(180deg, #ffffff, #f0f8e8);
+    }
+    .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 34px; align-items: start; }
+    form {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 28px;
+    }
+    label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea { min-height: 130px; resize: vertical; }
+    .form-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+    footer {
+      padding: 52px 0 28px;
+      color: var(--muted);
+      font-size: 14px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.3fr .8fr 1fr;
+      gap: 42px;
+      align-items: start;
+    }
+    .footer-brand img {
+      height: 58px;
+      width: auto;
+      display: block;
+      margin-bottom: 18px;
+    }
+    .footer-brand p {
+      margin: 0;
+      max-width: 380px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .footer-title {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .footer-links {
+      display: grid;
+      gap: 8px;
+    }
+    .footer-links a {
+      color: var(--muted);
+      transition: color .2s ease;
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    .footer-contact p {
+      margin: 0 0 8px;
+    }
+    .footer-office-title {
+      margin-top: 14px !important;
+      color: var(--text);
+      font-weight: 800;
+    }
+    .footer-bottom {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(79, 143, 24, .18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+      background: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, .contact-grid { grid-template-columns: 1fr; }
+      .grid-3, .tech-row { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      body { padding-top: 88px; }
+      .nav {
+        height: 88px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-logo {
+        height: 42px;
+        transform: translateY(2px);
+      }
+
+      .lang {
+        margin-left: auto;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .lang-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .lang button {
+        padding: 5px 8px;
+        font-size: 13px;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+        margin-left: 8px;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 88px;
+        left: 0;
+        width: 100%;
+        max-height: calc(100vh - 88px);
+        overflow-y: auto;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 14px 24px 22px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, .10);
+        font-size: 16px;
+        z-index: 1001;
+      }
+
+      .nav-links.is-open {
+        display: flex;
+      }
+
+      .nav-item {
+        width: 100%;
+        display: block;
+        height: auto;
+      }
+      .nav-dropdown-trigger::after {
+        display: none;
+      }
+
+      .nav-dropdown,
+      .nav-item:hover .nav-dropdown {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        width: 100%;
+        min-width: 0;
+        padding: 0 0 0 18px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .nav-links a,
+      .nav-dropdown-trigger {
+        display: block;
+        width: 100%;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        color: var(--text);
+        line-height: 1.35;
+        background: transparent;
+      }
+
+      .nav-dropdown a {
+        display: block;
+        width: 100%;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--muted);
+        background: transparent;
+      }
+
+      .nav-dropdown a:hover {
+        background: transparent;
+      }
+      .nav-links > a:last-child {
+        border-bottom: 0;
+      }
+      .hero { padding-top: 72px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="hero capabilities-hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow" data-i18n="cap_eyebrow">Technology Platform</div>
+            <h1 data-i18n="cap_h1">技術平台與開發能力</h1>
+            <p class="lead" data-i18n="cap_lead">
+              我們整合藍牙通訊、影像系統與智慧感測平台，協助客戶完成嵌入式產品開發、功能整合、樣機驗證與量產導入。
+            </p>
+            <div class="cta">
+              <a class="btn primary" href="contact.html" data-i18n="cap_cta_primary">洽詢開發合作</a>
+              <a class="btn secondary" href="index.html" data-i18n="cap_cta_secondary">返回首頁</a>
+            </div>
+          </div>
+
+          <div class="hero-panel">
+            <div class="platform-card">
+              <b data-i18n="cap_panel_1_title">Embedded System</b>
+              <span data-i18n="cap_panel_1_p">韌體、硬體、結構與產品功能整合。</span>
+            </div>
+            <div class="platform-card">
+              <b data-i18n="cap_panel_2_title">OEM / ODM Support</b>
+              <span data-i18n="cap_panel_2_p">從方案評估、客製開發到量產支援。</span>
+            </div>
+            <div class="platform-card">
+              <b data-i18n="cap_panel_3_title">Production Ready</b>
+              <span data-i18n="cap_panel_3_p">以穩定性、可製造性與長期供應為核心。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="cap_core_h2">核心開發能力</h2>
+          <p data-i18n="cap_core_p">
+            以產品落地為目標，整合平台選型、系統設計、功能開發、測試驗證與量產調整。
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">01</div>
+            <h3 data-i18n="cap_core_1_h3">硬體平台整合</h3>
+            <p data-i18n="cap_core_1_p">
+              依照產品需求選擇合適晶片、模組、感測器與電源架構，建立穩定可量產的硬體基礎。
+            </p>
+            <ul class="list">
+              <li data-i18n="cap_core_1_li1">晶片與模組選型</li>
+              <li data-i18n="cap_core_1_li2">電源與續航設計</li>
+              <li data-i18n="cap_core_1_li3">PCB 與結構配合</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">02</div>
+            <h3 data-i18n="cap_core_2_h3">韌體與功能開發</h3>
+            <p data-i18n="cap_core_2_p">
+              針對產品情境開發配對流程、操作邏輯、語音提示、影像錄製與 App 互動功能。
+            </p>
+            <ul class="list">
+              <li data-i18n="cap_core_2_li1">嵌入式韌體開發</li>
+              <li data-i18n="cap_core_2_li2">功能流程與 UI 邏輯</li>
+              <li data-i18n="cap_core_2_li3">App 與設備連線整合</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">03</div>
+            <h3 data-i18n="cap_core_3_h3">測試驗證與量產支援</h3>
+            <p data-i18n="cap_core_3_p">
+              從樣機測試、可靠度檢查到量產問題調整，協助產品穩定進入市場。
+            </p>
+            <ul class="list">
+              <li data-i18n="cap_core_3_li1">樣機功能驗證</li>
+              <li data-i18n="cap_core_3_li2">環境與使用測試</li>
+              <li data-i18n="cap_core_3_li3">量產導入與問題修正</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="capabilities">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="cap_platform_h2">技術平台方向</h2>
+          <p data-i18n="cap_platform_p">
+            依照不同產品需求，提供可擴充、可客製、可量產的嵌入式技術平台。
+          </p>
+        </div>
+
+        <div class="tech-row">
+          <article class="tech-box">
+            <strong data-i18n="cap_platform_1_title">Bluetooth Platform</strong>
+            <p data-i18n="cap_platform_1_p">藍牙音訊、通話降噪、對講系統、多裝置連線與 App 控制整合。</p>
+          </article>
+
+          <article class="tech-box">
+            <strong data-i18n="cap_platform_2_title">Imaging Platform</strong>
+            <p data-i18n="cap_platform_2_p">影像錄製、鏡頭模組、Wi-Fi 傳輸、循環錄影與行車影像應用。</p>
+          </article>
+
+          <article class="tech-box">
+            <strong data-i18n="cap_platform_3_title">Sensing Platform</strong>
+            <p data-i18n="cap_platform_3_p">智慧看護、存在偵測、非接觸式感測與隱私友善應用整合。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="cap_service_h2">可提供的合作內容</h2>
+          <p data-i18n="cap_service_p">
+            依照客戶需求，可提供從單一模組導入到完整產品開發的不同合作方式。
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">A</div>
+            <h3 data-i18n="cap_service_1_h3">方案導入</h3>
+            <p data-i18n="cap_service_1_p">協助客戶選擇合適平台與功能架構，快速建立產品開發方向。</p>
+          </article>
+
+          <article class="card">
+            <div class="icon">B</div>
+            <h3 data-i18n="cap_service_2_h3">客製開發</h3>
+            <p data-i18n="cap_service_2_p">依照品牌需求調整功能、外觀、操作邏輯、語音提示與 App 互動流程。</p>
+          </article>
+
+          <article class="card">
+            <div class="icon">C</div>
+            <h3 data-i18n="cap_service_3_h3">量產支援</h3>
+            <p data-i18n="cap_service_3_p">支援樣機測試、量產調整、供應鏈協調與後續版本迭代。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="capabilities">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="cap_process_h2">開發流程</h2>
+          <p data-i18n="cap_process_p">
+            透過清楚的開發節點，降低溝通成本並提升產品導入效率。
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <small>01</small>
+            <b data-i18n="cap_step_1">需求評估</b>
+          </div>
+          <div class="step">
+            <small>02</small>
+            <b data-i18n="cap_step_2">平台選型</b>
+          </div>
+          <div class="step">
+            <small>03</small>
+            <b data-i18n="cap_step_3">功能定義</b>
+          </div>
+          <div class="step">
+            <small>04</small>
+            <b data-i18n="cap_step_4">樣機開發</b>
+          </div>
+          <div class="step">
+            <small>05</small>
+            <b data-i18n="cap_step_5">測試驗證</b>
+          </div>
+          <div class="step">
+            <small>06</small>
+            <b data-i18n="cap_step_6">量產導入</b>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="layout.js"></script>
+  <script>
+    const translations = {
+      "zh-TW": {
+        page_title: "技術平台與開發能力｜翔米科技",
+        cap_eyebrow: "Technology Platform",
+        cap_h1: "技術平台與開發能力",
+        cap_lead: "我們整合藍牙通訊、影像系統與智慧感測平台，協助客戶完成嵌入式產品開發、功能整合、樣機驗證與量產導入。",
+        cap_cta_primary: "洽詢開發合作",
+        cap_cta_secondary: "返回首頁",
+        cap_panel_1_title: "Embedded System",
+        cap_panel_1_p: "韌體、硬體、結構與產品功能整合。",
+        cap_panel_2_title: "OEM / ODM Support",
+        cap_panel_2_p: "從方案評估、客製開發到量產支援。",
+        cap_panel_3_title: "Production Ready",
+        cap_panel_3_p: "以穩定性、可製造性與長期供應為核心。",
+        cap_core_h2: "核心開發能力",
+        cap_core_p: "以產品落地為目標，整合平台選型、系統設計、功能開發、測試驗證與量產調整。",
+        cap_core_1_h3: "硬體平台整合",
+        cap_core_1_p: "依照產品需求選擇合適晶片、模組、感測器與電源架構，建立穩定可量產的硬體基礎。",
+        cap_core_1_li1: "晶片與模組選型",
+        cap_core_1_li2: "電源與續航設計",
+        cap_core_1_li3: "PCB 與結構配合",
+        cap_core_2_h3: "韌體與功能開發",
+        cap_core_2_p: "針對產品情境開發配對流程、操作邏輯、語音提示、影像錄製與 App 互動功能。",
+        cap_core_2_li1: "嵌入式韌體開發",
+        cap_core_2_li2: "功能流程與 UI 邏輯",
+        cap_core_2_li3: "App 與設備連線整合",
+        cap_core_3_h3: "測試驗證與量產支援",
+        cap_core_3_p: "從樣機測試、可靠度檢查到量產問題調整，協助產品穩定進入市場。",
+        cap_core_3_li1: "樣機功能驗證",
+        cap_core_3_li2: "環境與使用測試",
+        cap_core_3_li3: "量產導入與問題修正",
+        cap_platform_h2: "技術平台方向",
+        cap_platform_p: "依照不同產品需求，提供可擴充、可客製、可量產的嵌入式技術平台。",
+        cap_platform_1_title: "Bluetooth Platform",
+        cap_platform_1_p: "藍牙音訊、通話降噪、對講系統、多裝置連線與 App 控制整合。",
+        cap_platform_2_title: "Imaging Platform",
+        cap_platform_2_p: "影像錄製、鏡頭模組、Wi-Fi 傳輸、循環錄影與行車影像應用。",
+        cap_platform_3_title: "Sensing Platform",
+        cap_platform_3_p: "智慧看護、存在偵測、非接觸式感測與隱私友善應用整合。",
+        cap_service_h2: "可提供的合作內容",
+        cap_service_p: "依照客戶需求，可提供從單一模組導入到完整產品開發的不同合作方式。",
+        cap_service_1_h3: "方案導入",
+        cap_service_1_p: "協助客戶選擇合適平台與功能架構，快速建立產品開發方向。",
+        cap_service_2_h3: "客製開發",
+        cap_service_2_p: "依照品牌需求調整功能、外觀、操作邏輯、語音提示與 App 互動流程。",
+        cap_service_3_h3: "量產支援",
+        cap_service_3_p: "支援樣機測試、量產調整、供應鏈協調與後續版本迭代。",
+        cap_process_h2: "開發流程",
+        cap_process_p: "透過清楚的開發節點，降低溝通成本並提升產品導入效率。",
+        cap_step_1: "需求評估",
+        cap_step_2: "平台選型",
+        cap_step_3: "功能定義",
+        cap_step_4: "樣機開發",
+        cap_step_5: "測試驗證",
+        cap_step_6: "量產導入"
+      },
+      "zh-CN": {
+        page_title: "技术平台与开发能力｜深圳翔迈特科技",
+        cap_eyebrow: "Technology Platform",
+        cap_h1: "技术平台与开发能力",
+        cap_lead: "我们整合蓝牙通讯、影像系统与智慧感测平台，协助客户完成嵌入式产品开发、功能整合、样机验证与量产导入。",
+        cap_cta_primary: "洽询开发合作",
+        cap_cta_secondary: "返回首页",
+        cap_panel_1_title: "Embedded System",
+        cap_panel_1_p: "固件、硬件、结构与产品功能整合。",
+        cap_panel_2_title: "OEM / ODM Support",
+        cap_panel_2_p: "从方案评估、客制开发到量产支持。",
+        cap_panel_3_title: "Production Ready",
+        cap_panel_3_p: "以稳定性、可制造性与长期供应为核心。",
+        cap_core_h2: "核心开发能力",
+        cap_core_p: "以产品落地为目标，整合平台选型、系统设计、功能开发、测试验证与量产调整。",
+        cap_core_1_h3: "硬件平台整合",
+        cap_core_1_p: "依照产品需求选择合适芯片、模组、感测器与电源架构，建立稳定可量产的硬件基础。",
+        cap_core_1_li1: "芯片与模组选型",
+        cap_core_1_li2: "电源与续航设计",
+        cap_core_1_li3: "PCB 与结构配合",
+        cap_core_2_h3: "固件与功能开发",
+        cap_core_2_p: "针对产品场景开发配对流程、操作逻辑、语音提示、影像录制与 App 互动功能。",
+        cap_core_2_li1: "嵌入式固件开发",
+        cap_core_2_li2: "功能流程与 UI 逻辑",
+        cap_core_2_li3: "App 与设备连接整合",
+        cap_core_3_h3: "测试验证与量产支持",
+        cap_core_3_p: "从样机测试、可靠度检查到量产问题调整，协助产品稳定进入市场。",
+        cap_core_3_li1: "样机功能验证",
+        cap_core_3_li2: "环境与使用测试",
+        cap_core_3_li3: "量产导入与问题修正",
+        cap_platform_h2: "技术平台方向",
+        cap_platform_p: "依照不同产品需求，提供可扩充、可客制、可量产的嵌入式技术平台。",
+        cap_platform_1_title: "Bluetooth Platform",
+        cap_platform_1_p: "蓝牙音频、通话降噪、对讲系统、多设备连接与 App 控制整合。",
+        cap_platform_2_title: "Imaging Platform",
+        cap_platform_2_p: "影像录制、镜头模组、Wi-Fi 传输、循环录影与行车影像应用。",
+        cap_platform_3_title: "Sensing Platform",
+        cap_platform_3_p: "智慧看护、存在侦测、非接触式感测与隐私友善应用整合。",
+        cap_service_h2: "可提供的合作内容",
+        cap_service_p: "依照客户需求，可提供从单一模组导入到完整产品开发的不同合作方式。",
+        cap_service_1_h3: "方案导入",
+        cap_service_1_p: "协助客户选择合适平台与功能架构，快速建立产品开发方向。",
+        cap_service_2_h3: "客制开发",
+        cap_service_2_p: "依照品牌需求调整功能、外观、操作逻辑、语音提示与 App 互动流程。",
+        cap_service_3_h3: "量产支持",
+        cap_service_3_p: "支持样机测试、量产调整、供应链协调与后续版本迭代。",
+        cap_process_h2: "开发流程",
+        cap_process_p: "透过清楚的开发节点，降低沟通成本并提升产品导入效率。",
+        cap_step_1: "需求评估",
+        cap_step_2: "平台选型",
+        cap_step_3: "功能定义",
+        cap_step_4: "样机开发",
+        cap_step_5: "测试验证",
+        cap_step_6: "量产导入"
+      },
+      "en": {
+        page_title: "Technology Platform & Capabilities | Summit Technology",
+        cap_eyebrow: "Technology Platform",
+        cap_h1: "Technology Platform & Capabilities",
+        cap_lead: "We integrate Bluetooth communication, imaging systems, and smart sensing platforms to support embedded product development, feature integration, prototype validation, and production launch.",
+        cap_cta_primary: "Contact Us",
+        cap_cta_secondary: "Back to Home",
+        cap_panel_1_title: "Embedded System",
+        cap_panel_1_p: "Firmware, hardware, mechanical structure, and product feature integration.",
+        cap_panel_2_title: "OEM / ODM Support",
+        cap_panel_2_p: "From solution evaluation and customization to mass production support.",
+        cap_panel_3_title: "Production Ready",
+        cap_panel_3_p: "Focused on stability, manufacturability, and long-term supply.",
+        cap_core_h2: "Core Development Capabilities",
+        cap_core_p: "A product-oriented development approach covering platform selection, system design, feature development, validation, and production adjustment.",
+        cap_core_1_h3: "Hardware Platform Integration",
+        cap_core_1_p: "Select suitable chipsets, modules, sensors, and power architecture based on product requirements to build a stable production-ready hardware foundation.",
+        cap_core_1_li1: "Chipset and module selection",
+        cap_core_1_li2: "Power and battery life design",
+        cap_core_1_li3: "PCB and mechanical integration",
+        cap_core_2_h3: "Firmware and Feature Development",
+        cap_core_2_p: "Develop pairing flows, operation logic, voice prompts, video recording, and App interactions for product scenarios.",
+        cap_core_2_li1: "Embedded firmware development",
+        cap_core_2_li2: "Feature flow and UI logic",
+        cap_core_2_li3: "App and device connection integration",
+        cap_core_3_h3: "Validation and Production Support",
+        cap_core_3_p: "From prototype testing and reliability checks to production issue adjustment, helping products enter the market with stability.",
+        cap_core_3_li1: "Prototype function validation",
+        cap_core_3_li2: "Environmental and usage testing",
+        cap_core_3_li3: "Production launch and issue correction",
+        cap_platform_h2: "Technology Platform Directions",
+        cap_platform_p: "Expandable, customizable, and production-ready embedded technology platforms for different product requirements.",
+        cap_platform_1_title: "Bluetooth Platform",
+        cap_platform_1_p: "Bluetooth audio, call noise reduction, intercom systems, multi-device connection, and App control integration.",
+        cap_platform_2_title: "Imaging Platform",
+        cap_platform_2_p: "Video recording, camera modules, Wi-Fi transmission, loop recording, and dash camera applications.",
+        cap_platform_3_title: "Sensing Platform",
+        cap_platform_3_p: "Smart care, presence detection, non-contact sensing, and privacy-friendly application integration.",
+        cap_service_h2: "Cooperation Scope",
+        cap_service_p: "Depending on customer needs, we support different cooperation models from single-module integration to complete product development.",
+        cap_service_1_h3: "Solution Integration",
+        cap_service_1_p: "Help customers choose suitable platforms and feature architectures to quickly establish product development directions.",
+        cap_service_2_h3: "Custom Development",
+        cap_service_2_p: "Adjust features, appearance, operation logic, voice prompts, and App interaction flows based on brand needs.",
+        cap_service_3_h3: "Production Support",
+        cap_service_3_p: "Support prototype testing, production adjustment, supply chain coordination, and future version iteration.",
+        cap_process_h2: "Development Process",
+        cap_process_p: "Clear development milestones help reduce communication cost and improve product launch efficiency.",
+        cap_step_1: "Requirement Review",
+        cap_step_2: "Platform Selection",
+        cap_step_3: "Function Definition",
+        cap_step_4: "Prototype Development",
+        cap_step_5: "Validation",
+        cap_step_6: "Production Launch"
+      }
+    };
+
+
+    function setLang(lang) {
+      const dict = {
+        ...(layoutTranslations[lang] || layoutTranslations["zh-TW"]),
+        ...(translations[lang] || translations["zh-TW"])
+      };
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.textContent = dict[key];
+      });
+      document.querySelectorAll(".lang button").forEach(btn => btn.classList.toggle("active", btn.dataset.lang === lang));
+      localStorage.setItem("summit-lang", lang);
+      document.title = dict.page_title || "Summit Technology";
+    }
+
+    document.querySelectorAll(".lang button").forEach(btn => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
+    setLang(localStorage.getItem("summit-lang") || "zh-TW");
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summit Technology</title>
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <meta name="description" content="Summit Technology 提供 Qualcomm 藍牙通訊、iCatch 影像系統與超聲波智慧照護方案，協助客戶完成 OEM / ODM 與產品整合開發。" />
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #5f6b7a;
+      --line: #e5eaf0;
+      --primary: #4f8f18;
+      --primary-2: #94c848;
+      --soft: #f0f8e8;
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding-top: 72px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Noto Sans SC", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .nav.container {
+      width: 100%;
+      max-width: none;
+      padding: 0 40px;
+      margin: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      height: 72px;
+      display: grid;
+      grid-template-columns: 260px 1fr 260px;
+      align-items: center;
+      gap: 24px;
+    }
+    .header-logo {
+      height: 60px;
+      width: auto;
+      display: block;
+      transform: translateY(4px);
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .brand small { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 5px; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2vw, 30px);
+      font-size: clamp(14px, 1.25vw, 17px);
+      font-weight: 700;
+      color: #263142;
+    }
+    .nav-links a,
+    .nav-dropdown-trigger {
+      white-space: nowrap;
+      transition: color .2s ease;
+    }
+    .nav-links a:hover,
+    .nav-dropdown-trigger:hover {
+      color: var(--primary);
+    }
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 72px;
+    }
+    .nav-dropdown-trigger::after {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-left: 8px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+    }
+    .nav-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      transform: translateY(8px);
+      min-width: 230px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, .12);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+      z-index: 1002;
+    }
+    .nav-item:hover .nav-dropdown {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    
+    .nav-dropdown a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-size: 16px;
+      color: #263142;
+    }
+
+    .nav-dropdown a:hover {
+      background: var(--soft);
+      color: var(--primary);
+    }
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .menu-toggle span {
+      width: 20px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--text);
+      transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .menu-toggle.is-open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle.is-open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.is-open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+    .lang {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-left: 0;
+    }
+    .lang-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex: 0 0 auto;
+    }
+    .lang button {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .lang button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .hero {
+      padding: 120px 0 72px;
+      background:
+        radial-gradient(circle at 75% 20%, rgba(148,200,72,.18), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 54px; align-items: center; }
+    .eyebrow {
+      color: var(--primary-2);
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: clamp(38px, 5vw, 64px); line-height: 1.08; margin: 0 0 22px; letter-spacing: -1.8px; }
+    .lead { font-size: 19px; color: var(--muted); max-width: 620px; margin: 0 0 32px; }
+    .cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+    }
+    .btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn.secondary { background: #fff; color: var(--primary); }
+
+    .hero-panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 22px 60px rgba(79, 143, 24, .10);
+    }
+    .platform-card {
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fbfdf9, #f0f8e8);
+      border: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .platform-card:last-child { margin-bottom: 0; }
+    .platform-card b { display: block; font-size: 18px; margin-bottom: 6px; }
+    .platform-card span { color: var(--muted); font-size: 14px; }
+
+    section { padding: 78px 0; }
+    .section-head { max-width: 720px; margin-bottom: 36px; }
+    .section-head h2 { font-size: clamp(30px, 3vw, 42px); line-height: 1.18; margin: 0 0 14px; letter-spacing: -.8px; }
+    .section-head p { color: var(--muted); margin: 0; font-size: 17px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      min-height: 250px;
+    }
+    .icon {
+      width: 44px; height: 44px;
+      border-radius: 13px;
+      display: grid; place-items: center;
+      background: var(--soft);
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 22px; }
+    .card p { margin: 0 0 18px; color: var(--muted); }
+    .list { margin: 0; padding: 0; list-style: none; color: #334155; font-size: 15px; }
+    .list li { padding: 7px 0; border-top: 1px solid var(--line); }
+
+    .capabilities { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .step {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 130px;
+    }
+    .step small { color: var(--primary-2); font-weight: 800; }
+    .step b { display: block; margin-top: 10px; }
+
+    .tech-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .tech-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 30px;
+    }
+    .tech-box strong { display: block; font-size: 26px; color: var(--primary); margin-bottom: 8px; }
+    .tech-box p { margin: 0; color: var(--muted); }
+
+    .contact {
+      background: linear-gradient(180deg, #ffffff, #f0f8e8);
+    }
+    .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 34px; align-items: start; }
+    form {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 28px;
+    }
+    label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea { min-height: 130px; resize: vertical; }
+    .form-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+    footer {
+      padding: 52px 0 28px;
+      color: var(--muted);
+      font-size: 14px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.3fr .8fr 1fr;
+      gap: 42px;
+      align-items: start;
+    }
+    .footer-brand img {
+      height: 58px;
+      width: auto;
+      display: block;
+      margin-bottom: 18px;
+    }
+    .footer-brand p {
+      margin: 0;
+      max-width: 380px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .footer-title {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .footer-links {
+      display: grid;
+      gap: 8px;
+    }
+    .footer-links a {
+      color: var(--muted);
+      transition: color .2s ease;
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    .footer-contact p {
+      margin: 0 0 8px;
+    }
+    .footer-office-title {
+      margin-top: 14px !important;
+      color: var(--text);
+      font-weight: 800;
+    }
+    .footer-bottom {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(79, 143, 24, .18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+      background: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, .contact-grid { grid-template-columns: 1fr; }
+      .grid-3, .tech-row { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      body { padding-top: 88px; }
+      .nav {
+        height: 88px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-logo {
+        height: 42px;
+        transform: translateY(2px);
+      }
+
+      .lang {
+        margin-left: auto;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .lang-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .lang button {
+        padding: 5px 8px;
+        font-size: 13px;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+        margin-left: 8px;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 88px;
+        left: 0;
+        width: 100%;
+        max-height: calc(100vh - 88px);
+        overflow-y: auto;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 14px 24px 22px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, .10);
+        font-size: 16px;
+        z-index: 1001;
+      }
+
+      .nav-links.is-open {
+        display: flex;
+      }
+
+      .nav-item {
+        width: 100%;
+        display: block;
+        height: auto;
+      }
+      .nav-dropdown-trigger::after {
+        display: none;
+      }
+
+      .nav-dropdown,
+      .nav-item:hover .nav-dropdown {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        width: 100%;
+        min-width: 0;
+        padding: 0 0 0 18px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .nav-links a,
+      .nav-dropdown-trigger {
+        display: block;
+        width: 100%;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        color: var(--text);
+        line-height: 1.35;
+        background: transparent;
+      }
+
+      .nav-dropdown a {
+        display: block;
+        width: 100%;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--muted);
+        background: transparent;
+      }
+
+      .nav-dropdown a:hover {
+        background: transparent;
+      }
+      .nav-links > a:last-child {
+        border-bottom: 0;
+      }
+      .hero { padding-top: 72px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="hero about-hero">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow" data-i18n="about_eyebrow">About Summit Technology</div>
+          <h1 data-i18n="about_h1">關於翔米科技</h1>
+          <p class="lead" data-i18n="about_lead">
+            我們專注於嵌入式通訊、影像系統與智慧照護方案，協助品牌與製造夥伴完成從方案導入、產品整合到量產支援的完整開發流程。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="about_value_h2">我們的核心理念</h2>
+          <p data-i18n="about_value_p">
+            技術不只是規格的堆疊，而是讓產品在真實場景中穩定、可靠並具備長期量產價值。
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">01</div>
+            <h3 data-i18n="about_value_1_h3">使用場景導向</h3>
+            <p data-i18n="about_value_1_p">
+              從實際應用場景出發，理解產品在移動、戶外、看護與長時間使用中的真實需求。
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">02</div>
+            <h3 data-i18n="about_value_2_h3">穩定量產導向</h3>
+            <p data-i18n="about_value_2_p">
+              重視系統穩定度、供應鏈整合與量產可行性，讓方案不只可展示，也能真正落地。
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">03</div>
+            <h3 data-i18n="about_value_3_h3">長期合作導向</h3>
+            <p data-i18n="about_value_3_p">
+              以產品生命週期為基礎，提供開發、測試、調整與後續升級支援，陪伴客戶持續迭代。
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="capabilities">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="about_solution_h2">專注的方案方向</h2>
+          <p data-i18n="about_solution_p">
+            以通訊、影像與感測技術為核心，提供可整合至不同產品型態的嵌入式方案。
+          </p>
+        </div>
+
+        <div class="tech-row">
+          <article class="tech-box">
+            <strong data-i18n="about_solution_1_title">Bluetooth Communication</strong>
+            <p data-i18n="about_solution_1_p">藍牙通訊、音訊處理、對講系統與 App 連線整合。</p>
+          </article>
+
+          <article class="tech-box">
+            <strong data-i18n="about_solution_2_title">Imaging System</strong>
+            <p data-i18n="about_solution_2_p">影像錄製、Wi-Fi 傳輸、雙鏡頭系統與行車影像應用。</p>
+          </article>
+
+          <article class="tech-box">
+            <strong data-i18n="about_solution_3_title">Smart Care Solution</strong>
+            <p data-i18n="about_solution_3_p">智慧看護、存在偵測、非接觸式感測與隱私友善應用。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="about_process_h2">合作流程</h2>
+          <p data-i18n="about_process_p">
+            從需求確認到量產支援，我們協助客戶降低開發風險，縮短產品導入時間。
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <small>01</small>
+            <b data-i18n="about_step_1">需求評估</b>
+          </div>
+          <div class="step">
+            <small>02</small>
+            <b data-i18n="about_step_2">方案導入</b>
+          </div>
+          <div class="step">
+            <small>03</small>
+            <b data-i18n="about_step_3">樣機開發</b>
+          </div>
+          <div class="step">
+            <small>04</small>
+            <b data-i18n="about_step_4">測試驗證</b>
+          </div>
+          <div class="step">
+            <small>05</small>
+            <b data-i18n="about_step_5">量產支援</b>
+          </div>
+          <div class="step">
+            <small>06</small>
+            <b data-i18n="about_step_6">後續維護</b>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="layout.js"></script>
+  <script>
+    const translations = {
+      "zh-TW": {
+        page_title: "翔米科技"
+
+      },
+      "zh-CN": {
+        page_title: "深圳翔迈特科技"
+
+      },
+      "en": {
+        page_title: "Summit Technology"
+
+      }
+    };
+
+
+    function setLang(lang) {
+      const dict = {
+        ...(layoutTranslations[lang] || layoutTranslations["zh-TW"]),
+        ...(translations[lang] || translations["zh-TW"])
+      };
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.textContent = dict[key];
+      });
+      document.querySelectorAll(".lang button").forEach(btn => btn.classList.toggle("active", btn.dataset.lang === lang));
+      localStorage.setItem("summit-lang", lang);
+      document.title = dict.page_title || "Summit Technology";
+    }
+
+    document.querySelectorAll(".lang button").forEach(btn => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
+    setLang(localStorage.getItem("summit-lang") || "zh-TW");
+
+  </script>
+</body>
+</html>
